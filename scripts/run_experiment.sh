@@ -18,9 +18,6 @@ function set_conf() {
 function compile() {
 	# install ceph
 	cd "${CEPH_HOME}"
-	./install-deps.sh
-	sudo apt update
-	./do_cmake.sh -DWITH_MANPAGE=OFF -DWITH_BABELTRACE=OFF -DWITH_MGR_DASHBOARD_FRONTEND=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo
 	cd build
 	make -j`nproc`
 	../src/stop.sh && rm -rf out dev && MON=1 OSD=1 MGR=1 MDS=0 RGW=0 ../src/vstart.sh -n -x
@@ -64,6 +61,9 @@ if [ ! -d "$CEPH_HOME" ]; then
     git clone https://github.com/esmaeil-mirvakili/ceph.git
 	cd "$CEPH_HOME"	
 	git checkout dev-CoDel
+	./install-deps.sh
+	sudo apt update
+	./do_cmake.sh -DWITH_MANPAGE=OFF -DWITH_BABELTRACE=OFF -DWITH_MGR_DASHBOARD_FRONTEND=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo
 fi
 
 if [ ! -d "$FIO_HOME" ]; then
@@ -104,8 +104,6 @@ do
 				fi
 				cd "$CEPH_HOME/build"
 				cp codel_log.csv "${MAIN_DIR}/results/codel_log_io_depth_${io_depth}_target_lat_${target_lat}_interval_${interval}_adaptive_${adaptive}.csv"
-				rm -rf "$CEPH_HOME"
-				rm -rf "$FIO_HOME"
 			done
 		done
 	done
