@@ -79,8 +79,8 @@ do
 				if [ ! -d "$CEPH_HOME" ]; then
 				    echo "Cloning ceph"
 				    cd "$MAIN_DIR"
-				    git clone https://github.com/esmaeil-mirvakili/benchmark.git
-					cd ceph	
+				    git clone https://github.com/esmaeil-mirvakili/ceph.git
+					cd "$CEPH_HOME"	
 					git checkout dev-CoDel
 				fi
 
