@@ -45,8 +45,8 @@ function run_experiment() {
 }
 
 
-sudo apt update
-sudo apt-get install python3-routes
+sudo apt --assume-yes update
+sudo apt-get --assume-yes install python3-routes
 
 target_lat_configs=(500 600 700 800 900 1000 1100)
 interval_configs=(250 500 750 1000 1500 2000 3000 4000)
