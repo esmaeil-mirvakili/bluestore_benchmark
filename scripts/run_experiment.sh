@@ -55,20 +55,8 @@ io_depth_configs=(4 8 32 48 64 128)
 exp_index=1
 
 export CEPH_HOME="$MAIN_DIR/ceph"
-if [ ! -d "$CEPH_HOME" ]; then
-    echo "Cloning ceph"
-    cd "$MAIN_DIR"
-    git clone https://github.com/esmaeil-mirvakili/benchmark.git
-	cd ceph	
-	git checkout dev-CoDel
-fi
-
 export FIO_HOME="$MAIN_DIR/fio"
-if [ ! -d "$FIO_HOME" ]; then
-    echo "Cloning ceph"
-    cd "$MAIN_DIR"
-    git clone https://github.com/axboe/fio.git
-fi
+
 
 cd "$WORKING_DIR"
 for io_depth in "${io_depth_configs[@]}"
@@ -87,6 +75,20 @@ do
 				echo "adaptive: $adaptive"
 				echo
 				let "exp_index++"
+
+				if [ ! -d "$CEPH_HOME" ]; then
+				    echo "Cloning ceph"
+				    cd "$MAIN_DIR"
+				    git clone https://github.com/esmaeil-mirvakili/benchmark.git
+					cd ceph	
+					git checkout dev-CoDel
+				fi
+
+				if [ ! -d "$FIO_HOME" ]; then
+				    echo "Cloning ceph"
+				    cd "$MAIN_DIR"
+				    git clone https://github.com/axboe/fio.git
+				fi
 				
 				set_conf "$target_lat" "$interval" "$adaptive"
 				compile
@@ -100,6 +102,8 @@ do
 				fi
 				cd "$CEPH_HOME/build"
 				cp codel_log.csv "${MAIN_DIR}/results/codel_log_io_depth_${io_depth}_target_lat_${target_lat}_interval_${interval}_adaptive_${adaptive}.csv"
+				rm -rf "$CEPH_HOME"
+				rm -rf "$FIO_HOME"
 			done
 		done
 	done
