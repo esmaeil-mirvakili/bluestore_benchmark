@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export WORKING_DIR=$(pwd)
-export MAIN_DIR="~"
+export MAIN_DIR=$(eval echo "~")
 
 function set_conf() {
 	target_lat_param=$1
