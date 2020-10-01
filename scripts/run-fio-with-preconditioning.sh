@@ -1,0 +1,10 @@
+#!/bin/bash
+
+export CEPH_HOME=~/ceph
+export FIO_HOME=~/fio
+
+./preconditioning.sh
+
+./run-fio-queueing-delay.sh "$1"
+#./run-fio-2osds.sh
+
