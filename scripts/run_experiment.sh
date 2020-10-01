@@ -7,6 +7,7 @@ function set_conf() {
 	target_lat_param=$1
 	interval_param=$2
 	adaptive_param=$3
+	cd "$MAIN_DIR"
 	path="ceph/src/os/bluestore/BlueStore.cc"
 	echo "Set parameters in BlueStore.cc"
 	sed -i "s|<<target_latency>>|$target_lat_param|g" "$path"
@@ -57,6 +58,20 @@ exp_index=1
 export CEPH_HOME="$MAIN_DIR/ceph"
 export FIO_HOME="$MAIN_DIR/fio"
 
+if [ ! -d "$CEPH_HOME" ]; then
+    echo "Cloning ceph"
+    cd "$MAIN_DIR"
+    git clone https://github.com/esmaeil-mirvakili/ceph.git
+	cd "$CEPH_HOME"	
+	git checkout dev-CoDel
+fi
+
+if [ ! -d "$FIO_HOME" ]; then
+    echo "Cloning ceph"
+    cd "$MAIN_DIR"
+    git clone https://github.com/axboe/fio.git
+fi
+
 
 cd "$WORKING_DIR"
 for io_depth in "${io_depth_configs[@]}"
@@ -76,19 +91,6 @@ do
 				echo
 				let "exp_index++"
 
-				if [ ! -d "$CEPH_HOME" ]; then
-				    echo "Cloning ceph"
-				    cd "$MAIN_DIR"
-				    git clone https://github.com/esmaeil-mirvakili/ceph.git
-					cd "$CEPH_HOME"	
-					git checkout dev-CoDel
-				fi
-
-				if [ ! -d "$FIO_HOME" ]; then
-				    echo "Cloning ceph"
-				    cd "$MAIN_DIR"
-				    git clone https://github.com/axboe/fio.git
-				fi
 				
 				set_conf "$target_lat" "$interval" "$adaptive"
 				compile
