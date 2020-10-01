@@ -57,6 +57,7 @@ exp_index=1
 export CEPH_HOME="$MAIN_DIR/ceph"
 if [ ! -d "$CEPH_HOME" ]; then
     echo "Cloning ceph"
+    cd "$MAIN_DIR"
     git clone https://github.com/esmaeil-mirvakili/benchmark.git
 	cd ceph	
 	git checkout dev-CoDel
@@ -64,8 +65,8 @@ fi
 
 export FIO_HOME="$MAIN_DIR/fio"
 if [ ! -d "$FIO_HOME" ]; then
-	cd "$WORKING_DIR"
     echo "Cloning ceph"
+    cd "$MAIN_DIR"
     git clone https://github.com/axboe/fio.git
 fi
 
