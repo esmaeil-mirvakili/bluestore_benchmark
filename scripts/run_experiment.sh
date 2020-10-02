@@ -142,7 +142,7 @@ function prec() {
 	  exit 1
 	fi
 
-	device="$1"
+	device="/dev/sdc"
 	if [[ ! -b "$device" ]]; then
 	  echo "$device is not a block device"
 	  exit 2
