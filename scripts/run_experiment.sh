@@ -151,6 +151,7 @@ if [ ! -d "$FIO_HOME" ]; then
     git clone https://github.com/axboe/fio.git
 fi
 
+compile
 prec
 
 cd "$WORKING_DIR"
