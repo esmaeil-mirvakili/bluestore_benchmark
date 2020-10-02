@@ -63,7 +63,7 @@ if [ ! -d "$CEPH_HOME" ]; then
     git clone https://github.com/esmaeil-mirvakili/ceph.git
 	cd "$CEPH_HOME"	
 	git checkout dev-CoDel
-	cp ceph/src/os/bluestore/BlueStore.cc "$MAIN_DIR/BlueStore.cc"
+	cp "src/os/bluestore/BlueStore.cc" "$MAIN_DIR/BlueStore.cc"
 	./install-deps.sh
 	sudo apt update
 	./do_cmake.sh -DWITH_MANPAGE=OFF -DWITH_BABELTRACE=OFF -DWITH_MGR_DASHBOARD_FRONTEND=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo
