@@ -13,9 +13,6 @@ pool="mybench"
 dn=${rw}-${bs}-$(date +"%Y_%m_%d_%I_%M_%p")
 sudo mkdir -p ${dn} # create data if not created
 
-export CEPH_HOME=~/ceph
-export FIO_HOME=~/fio
-
 single_dump() {
     qdepth=$1
     dump_state="dump-state-${qdepth}.json"
@@ -51,14 +48,12 @@ for qd in $1; do
 	#------------- start cluster -------------#
 	./start_ceph.sh # this is normal Ceph cluster on HDD/SSD
 	#./start_ceph_ramdisk.sh # this is Ceph cluster on ramdisk
-	cd ~/ceph/build
 	sudo bin/ceph osd pool create mybench 128 128
 	sudo bin/rbd create --size=40G mybench/image1
 	sudo bin/ceph daemon osd.0 config show | grep bluestore_rocksdb
 	sleep 5 # warmup
 
 	# change the fio parameters
-	cd ~/bluestore_benchmark/scripts
 	sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_write.fio
 	sed -i "s/bs=.*/bs=${bs}/g" fio_write.fio
 	sed -i "s/rw=.*/rw=${rw}/g" fio_write.fio
@@ -70,24 +65,24 @@ for qd in $1; do
 	#echo pre-fill the image!
 	sudo LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio fio_prefill_rbdimage.fio
 	#------------- clear debug files and reset counters -------------#
-	# sudo rm /tmp/flush_job_timestamps.csv  /tmp/compact_job_timestamps.csv
+	sudo rm /tmp/flush_job_timestamps.csv  /tmp/compact_job_timestamps.csv
 	# reset the perf-counter
-	cd ~/ceph/build
 	sudo bin/ceph daemon osd.0 perf reset osd >/dev/null 2>/dev/null
 	sudo echo 3 | sudo tee /proc/sys/vm/drop_caches && sudo sync
 	# reset admin socket of OSD and BlueStore
 	sudo bin/ceph daemon osd.0 reset kvq vector
+	sudo bin/ceph daemon osd.0 reset opq vector
 
 	#------------- benchmark -------------#
     echo benchmark starts!
 	echo $qd
-	cd ~/bluestore_benchmark/scripts
     sudo LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio fio_write.fio --output-format=json --output=dump-fio-bench-${qd}.json 
 	
 	# dump internal data with admin socket
 	# BlueStore
-	cd ~/ceph/build
-	sudo bin/ceph daemon osd.0 dump kvq vector
+	sudo bin/ceph daemon osd.0 dump kvq vector	
+	# OSD
+	sudo bin/ceph daemon osd.0 dump opq vector
 	# aggregation
 	single_dump $qd
 	# rbd info

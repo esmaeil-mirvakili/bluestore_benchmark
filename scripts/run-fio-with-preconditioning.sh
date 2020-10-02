@@ -5,6 +5,6 @@ export FIO_HOME=~/fio
 
 ./preconditioning.sh
 
-./run-fio-queueing-delay.sh "$1"
+./run-fio-queueing-delay.sh
 #./run-fio-2osds.sh
 
