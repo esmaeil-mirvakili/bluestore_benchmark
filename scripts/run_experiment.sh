@@ -119,47 +119,7 @@ function run_experiment() {
 
 function prec() {
 	cd "$WORKING_DIR"
-	set -eu -o pipefail
-
-	if [[ "$EUID" -ne 0 ]]; then
-	  echo "This script must be run as root!"
-	  exit 1
-	fi
-
-	device="/dev/sdc"
-	if [[ ! -b "$device" ]]; then
-	  echo "$device is not a block device"
-	  exit 2
-	fi
-
-	total_sectors="$(blockdev --getsz "$device")"
-	echo "Trimming a total $total_sectors 512-byte sectors on device $device..."
-
-	SECTOR_COUNT=65535
-
-	remain_sectors="$total_sectors"
-	pos=0
-
-	echo -en "\033[0;31m Progress 0% ([$pos/$total_sectors])\033[0m"
-
-	while [[ "$remain_sectors" -gt 0 ]]; do
-	  if [ "$remain_sectors" -gt "$SECTOR_COUNT" ]; then
-	    sectors="$SECTOR_COUNT"
-	  else
-	    sectors="$remain_sectors"
-	  fi
-
-	  hdparm --please-destroy-my-drive --trim-sector-ranges "$pos":"$sectors" "$device" > /dev/null
-
-	  remain_sectors=$((remain_sectors - sectors))
-	  pos=$((pos + sectors))
-
-	  percentage=$((pos * 100 / total_sectors))
-	  echo -en "\e[0K\r\033[0;31m Progress $percentage% ([$pos/$total_sectors])\033[0m"
-	done
-
-	printf "Done!\n"
-	LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio prec.fio
+	./preconditioning.sh
 }
 
 
