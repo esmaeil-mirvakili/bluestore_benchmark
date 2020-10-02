@@ -30,9 +30,6 @@ function compile() {
 	LDFLAGS=-I"$CEPH_HOME"/src/include LIBRARY_PATH="$CEPH_HOME"/build/lib:$LIBRARY_PATH ./configure
 	EXTFLAGS=-I"$CEPH_HOME"/src/include LIBRARY_PATH="$CEPH_HOME"/build/lib:$LIBRARY_PATH make -j `nproc`
 
-	cd "$CEPH_HOME"/build
-	LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio "$FIO_HOME"/examples/rados.fio
-
 	# set git
 	git config --global user.name "esmaeil-mirvakili"
 	git config --global user.email "smirvaki@ucsc.edu"
@@ -41,7 +38,7 @@ function compile() {
 function run_experiment() {
 	io_depth=$1
 	cd "$WORKING_DIR"
-	bash run-fio-with-preconditioning.sh "$io_depth"
+	./run-fio-queueing-delay.sh "$io_depth"
 }
 
 
@@ -74,6 +71,9 @@ if [ ! -d "$FIO_HOME" ]; then
     cd "$MAIN_DIR"
     git clone https://github.com/axboe/fio.git
 fi
+
+cd "$WORKING_DIR"
+./preconditioning.sh
 
 
 cd "$WORKING_DIR"
