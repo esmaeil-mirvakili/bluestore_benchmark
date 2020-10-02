@@ -121,22 +121,6 @@ function prec() {
 	cd "$WORKING_DIR"
 	set -eu -o pipefail
 
-	if [[ "$#" -ne 1 ]]; then
-	  cat <<- ENDOFMESSAGE
-	Usage: $0 BLOCK_DEVICE
-
-	Discard all the sectors on a block device with "hdparm --trim-sector-ranges".
-
-	Note that this script is EXCEPTIONALLY DANGEROUS.
-	See the option --trim-sector-ranges of hdparm.
-
-	For the differences between trim and secure erase operation, see
-	https://www.thomas-krenn.com/en/wiki/SSD_Secure_Erase
-	https://storage.toshiba.com/docs/services-support-documents/ssd_application_note.pdf
-	ENDOFMESSAGE
-	  exit
-	fi
-
 	if [[ "$EUID" -ne 0 ]]; then
 	  echo "This script must be run as root!"
 	  exit 1
