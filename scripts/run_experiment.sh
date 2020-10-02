@@ -66,6 +66,7 @@ if [ ! -d "$CEPH_HOME" ]; then
 	./do_cmake.sh -DWITH_MANPAGE=OFF -DWITH_BABELTRACE=OFF -DWITH_MGR_DASHBOARD_FRONTEND=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo
 fi
 
+cd "$MAIN_DIR"
 if [ ! -d "$FIO_HOME" ]; then
     echo "Cloning ceph"
     cd "$MAIN_DIR"

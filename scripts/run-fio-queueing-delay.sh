@@ -13,6 +13,9 @@ pool="mybench"
 dn=${rw}-${bs}-$(date +"%Y_%m_%d_%I_%M_%p")
 sudo mkdir -p ${dn} # create data if not created
 
+export CEPH_HOME=~/ceph
+export FIO_HOME=~/fio
+
 single_dump() {
     qdepth=$1
     dump_state="dump-state-${qdepth}.json"
@@ -74,7 +77,6 @@ for qd in $1; do
 	sudo echo 3 | sudo tee /proc/sys/vm/drop_caches && sudo sync
 	# reset admin socket of OSD and BlueStore
 	sudo bin/ceph daemon osd.0 reset kvq vector
-	sudo bin/ceph daemon osd.0 reset opq vector
 
 	#------------- benchmark -------------#
     echo benchmark starts!
@@ -85,9 +87,7 @@ for qd in $1; do
 	# dump internal data with admin socket
 	# BlueStore
 	cd ~/ceph/build
-	sudo bin/ceph daemon osd.0 dump kvq vector	
-	# OSD
-	sudo bin/ceph daemon osd.0 dump opq vector
+	sudo bin/ceph daemon osd.0 dump kvq vector
 	# aggregation
 	single_dump $qd
 	# rbd info
