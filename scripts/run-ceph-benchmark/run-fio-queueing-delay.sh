@@ -65,13 +65,11 @@ for qd in $1; do
 	#echo pre-fill the image!
 	sudo LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio fio_prefill_rbdimage.fio
 	#------------- clear debug files and reset counters -------------#
-	sudo rm /tmp/flush_job_timestamps.csv  /tmp/compact_job_timestamps.csv
 	# reset the perf-counter
 	sudo bin/ceph daemon osd.0 perf reset osd >/dev/null 2>/dev/null
 	sudo echo 3 | sudo tee /proc/sys/vm/drop_caches && sudo sync
 	# reset admin socket of OSD and BlueStore
 	sudo bin/ceph daemon osd.0 reset kvq vector
-	sudo bin/ceph daemon osd.0 reset opq vector
 
 	#------------- benchmark -------------#
     echo benchmark starts!
@@ -82,9 +80,7 @@ for qd in $1; do
 	# BlueStore
 	sudo bin/ceph daemon osd.0 dump kvq vector	
 	# OSD
-	sudo bin/ceph daemon osd.0 dump opq vector
 	# aggregation
-	single_dump $qd
 	# rbd info
 	sudo bin/rbd info mybench/image1 | tee dump_rbd_info.txt
 	# get rocksdb debug files
