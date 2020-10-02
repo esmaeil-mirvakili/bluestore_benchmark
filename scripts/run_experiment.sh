@@ -99,8 +99,8 @@ do
 				compile
 				run_experiment "$io_depth"
 
-
-				ech "Moving results..."
+				sleep 10
+				echo "Moving results..."
 				cd "$MAIN_DIR"
 				if [ ! -d "results" ]; then
 				    mkdir results
