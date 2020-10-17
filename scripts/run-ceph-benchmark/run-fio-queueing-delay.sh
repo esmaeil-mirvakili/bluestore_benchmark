@@ -1,5 +1,6 @@
 #!/bin/bash
-
+export CEPH_HOME=~/ceph
+export FIO_HOME=~/fio
 # run rbd bench and collect result
 bs="4096"   #"131072"  # block size 
 rw="randwrite"  # io type
