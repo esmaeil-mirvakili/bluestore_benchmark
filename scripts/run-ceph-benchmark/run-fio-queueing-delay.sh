@@ -3,8 +3,9 @@ export CEPH_HOME=~/ceph
 export FIO_HOME=~/fio
 # run rbd bench and collect result
 bs="4096"   #"131072"  # block size 
-rw="randwrite"  # io type
+rw=$2  # io type
 fioruntime=300  # seconds
+prefill_time=$(( 2*fioruntime ))
 iototal="400m" # total bytes of io
 #qd=48 # workload queue depth
 
@@ -59,6 +60,11 @@ for qd in $1; do
 	sed -i "s/bs=.*/bs=${bs}/g" fio_write.fio
 	sed -i "s/rw=.*/rw=${rw}/g" fio_write.fio
 	sed -i "s/runtime=.*/runtime=${fioruntime}/g" fio_write.fio
+
+	sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_prefill_rbdimage.fio
+	sed -i "s/bs=.*/bs=${bs}/g" fio_prefill_rbdimage.fio
+	sed -i "s/rw=.*/rw=${rw}/g" fio_prefill_rbdimage.fio
+	sed -i "s/runtime=.*/runtime=${prefill_time}/g" fio_prefill_rbdimage.fio
 	#sed -i "s/size=.*/size=${iototal}/g" fio_write.fio
     
 	#------------- pre-fill -------------#    
