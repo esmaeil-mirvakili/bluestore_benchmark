@@ -2,12 +2,16 @@
 export CEPH_HOME=~/ceph
 export FIO_HOME=~/fio
 # run rbd bench and collect result
-bs="4096"   #"131072"  # block size 
+bs=$3   #"131072"  # block size 
 rw=$2  # io type
 fioruntime=300  # seconds
 prefill_time=$(( 2*fioruntime ))
 iototal="400m" # total bytes of io
 #qd=48 # workload queue depth
+echo '=================================================================='
+printf 'queue depth: %s\n' $1
+printf 'io type: %s\n' $2
+printf 'block size: %s\n' $3
 
 # no need to change
 DATA_FILE=dump-lat-analysis.csv  # output file name
