@@ -65,7 +65,6 @@ for qd in $1; do
 	sed -i "s/rw=.*/rw=${rw}/g" fio_write.fio
 	sed -i "s/runtime=.*/runtime=${fioruntime}/g" fio_write.fio
 
-	sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_prefill_rbdimage.fio
 	sed -i "s/bs=.*/bs=${bs}/g" fio_prefill_rbdimage.fio
 	sed -i "s/rw=.*/rw=${rw}/g" fio_prefill_rbdimage.fio
 	sed -i "s/runtime=.*/runtime=${prefill_time}/g" fio_prefill_rbdimage.fio
