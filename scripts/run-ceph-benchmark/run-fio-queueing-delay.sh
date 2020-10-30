@@ -7,7 +7,7 @@ rw=$2  # io type
 fioruntime=300  # seconds
 prefill_time=$(( 2*fioruntime ))
 iototal="400m" # total bytes of io
-#qd=48 # workload queue depth
+qd=$1 # workload queue depth
 echo '=================================================================='
 printf 'queue depth: %s\n' $1
 printf 'io type: %s\n' $2
@@ -44,63 +44,60 @@ single_dump() {
 
 printf '%s\n' "bs" "runtime" "qdepth" "bw_mbs" "lat_s" "osd_op_w_lat" "op_queue_lat" "osd_on_committed_lat" "bluestore_writes_lat" "bluestore_simple_writes_lat" "bluestore_deferred_writes_lat" "kv_queue_lat" "bluestore_kv_sync_lat" "bluestore_kvq_lat" "bluestore_simple_service_lat" "bluestore_deferred_service_lat" "bluestore_simple_aio_lat" "bluestore_deferred_aio_lat"|  paste -sd ',' > ${DATA_FILE} 
 #for qd in {16..72..8}; do
-for qd in $1; do
-	#bs="$((2**i*4*1024))"
-	#iototal="$((2**i*4*1024*100000))"   #"$((2**i*40))m"
-	
-	#------------- clear rocksdb debug files -------------#
-	#sudo rm /tmp/flush_job_timestamps.csv  /tmp/compact_job_timestamps.csv
-	
-	#------------- start cluster -------------#
-	./start_ceph.sh # this is normal Ceph cluster on HDD/SSD
-	#./start_ceph_ramdisk.sh # this is Ceph cluster on ramdisk
-	sudo bin/ceph osd pool create mybench 128 128
-	sudo bin/rbd create --size=40G mybench/image1
-	sudo bin/ceph daemon osd.0 config show | grep bluestore_rocksdb
-	sleep 5 # warmup
+#bs="$((2**i*4*1024))"
+#iototal="$((2**i*4*1024*100000))"   #"$((2**i*40))m"
 
-	# change the fio parameters
-	sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_write.fio
-	sed -i "s/bs=.*/bs=${bs}/g" fio_write.fio
-	sed -i "s/rw=.*/rw=${rw}/g" fio_write.fio
-	sed -i "s/runtime=.*/runtime=${fioruntime}/g" fio_write.fio
+#------------- clear rocksdb debug files -------------#
+#sudo rm /tmp/flush_job_timestamps.csv  /tmp/compact_job_timestamps.csv
 
-	sed -i "s/bs=.*/bs=${bs}/g" fio_prefill_rbdimage.fio
-	sed -i "s/rw=.*/rw=${rw}/g" fio_prefill_rbdimage.fio
-    
-	#------------- pre-fill -------------#    
-	# pre-fill the image(to eliminate the op_rw)
-	#echo pre-fill the image!
-	sudo LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio fio_prefill_rbdimage.fio
-	#------------- clear debug files and reset counters -------------#
-	# reset the perf-counter
-	sudo bin/ceph daemon osd.0 perf reset osd >/dev/null 2>/dev/null
-	sudo echo 3 | sudo tee /proc/sys/vm/drop_caches && sudo sync
-	# reset admin socket of OSD and BlueStore
-	sudo bin/ceph daemon osd.0 reset kvq vector
+#------------- start cluster -------------#
+./start_ceph.sh # this is normal Ceph cluster on HDD/SSD
+#./start_ceph_ramdisk.sh # this is Ceph cluster on ramdisk
+sudo bin/ceph osd pool create mybench 128 128
+sudo bin/rbd create --size=40G mybench/image1
+sudo bin/ceph daemon osd.0 config show | grep bluestore_rocksdb
+sleep 5 # warmup
 
-	#------------- benchmark -------------#
+# change the fio parameters
+sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_write.fio
+sed -i "s/bs=.*/bs=${bs}/g" fio_write.fio
+sed -i "s/rw=.*/rw=${rw}/g" fio_write.fio
+sed -i "s/runtime=.*/runtime=${fioruntime}/g" fio_write.fio
+
+sed -i "s/bs=.*/bs=${bs}/g" fio_prefill_rbdimage.fio
+sed -i "s/rw=.*/rw=${rw}/g" fio_prefill_rbdimage.fio
+sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_prefill_rbdimage.fio
+#------------- pre-fill -------------#    
+# pre-fill the image(to eliminate the op_rw)
+#echo pre-fill the image!
+sudo LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio fio_prefill_rbdimage.fio
+#------------- clear debug files and reset counters -------------#
+# reset the perf-counter
+sudo bin/ceph daemon osd.0 perf reset osd >/dev/null 2>/dev/null
+sudo echo 3 | sudo tee /proc/sys/vm/drop_caches && sudo sync
+# reset admin socket of OSD and BlueStore
+sudo bin/ceph daemon osd.0 reset kvq vector
+
+#------------- benchmark -------------#
     echo benchmark starts!
-	echo $qd
+echo $qd
     sudo LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio fio_write.fio --output-format=json --output=dump-fio-bench-${qd}.json 
-	
-	# dump internal data with admin socket
-	# BlueStore
-	sudo bin/ceph daemon osd.0 dump kvq vector	
-	# OSD
-	# aggregation
-	# rbd info
-	sudo bin/rbd info mybench/image1 | tee dump_rbd_info.txt
-	# get rocksdb debug files
-	#sudo cp /tmp/compact_job_timestamps.csv /tmp/flush_job_timestamps.csv /tmp/l0recover_job_timestamps.csv ${dn}
+
+# dump internal data with admin socket
+# BlueStore
+sudo bin/ceph daemon osd.0 dump kvq vector
+# OSD
+# aggregation
+# rbd info
+sudo bin/rbd info mybench/image1 | tee dump_rbd_info.txt
+# get rocksdb debug files
+#sudo cp /tmp/compact_job_timestamps.csv /tmp/flush_job_timestamps.csv /tmp/l0recover_job_timestamps.csv ${dn}
     echo benchmark stops!
 
-	#------------- stop cluster -------------#
-	sudo bin/rbd rm mybench/image1
-    sudo bin/ceph osd pool delete $pool $pool --yes-i-really-really-mean-it
-    sudo ../src/stop.sh
-	
-done
+#------------- stop cluster -------------#
+sudo bin/rbd rm mybench/image1
+sudo bin/ceph osd pool delete $pool $pool --yes-i-really-really-mean-it
+sudo ../src/stop.sh
 
 # move everything to a directory
 # sudo mv dump* ${dn}
