@@ -5,7 +5,7 @@ pool=mybench
 rbdname=image1
 bs=4096
 time_based=1
-;runtime=300
+runtime=300
 direct = 1
 ;write_iops_log
 
