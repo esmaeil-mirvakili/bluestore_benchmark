@@ -7,7 +7,8 @@ size=16106127360 # total bytes of io
 qd=16 # workload queue depth
 read_portion=$1
 read_size=$(( read_portion*size ))
-
+write_portion=$(( 1-read_portion ))
+write_size=$(( write_portion*size ))
 #------------- clear rocksdb debug files -------------#
 #sudo rm /tmp/flush_job_timestamps.csv  /tmp/compact_job_timestamps.csv
 
@@ -22,7 +23,7 @@ sleep 5 # warmup
 # change the fio parameters
 sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_read_write.fio
 sed -i "s/bs=.*/bs=${bs}/g" fio_read_write.fio
-sed -i "s/size=write_size/runtime=${size}/g" fio_read_write.fio
+sed -i "s/size=write_size/runtime=${write_size}/g" fio_read_write.fio
 sed -i "s/size=read_size/runtime=${read_size}/g" fio_read_write.fio
 
 sed -i "s/bs=.*/bs=${bs}/g" fio_prefill_rbdimage.fio
