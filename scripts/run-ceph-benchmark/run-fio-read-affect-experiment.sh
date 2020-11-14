@@ -6,9 +6,13 @@ bs=4096
 size=16106127360 # total bytes of io
 qd=16 # workload queue depth
 read_portion=$1
-read_size=$(( read_portion*size ))
-write_portion=$(( 1-read_portion ))
-write_size=$(( write_portion*size ))
+read_size=$(echo "$read_portion * $size" | bc)
+write_portion=$(echo "1 - $read_portion" | bc)
+write_size=$(echo "$write_portion * $size" | bc)
+echo '============================================='
+echo "write: ${write_portion}"
+echo '============================================='
+
 #------------- clear rocksdb debug files -------------#
 #sudo rm /tmp/flush_job_timestamps.csv  /tmp/compact_job_timestamps.csv
 
