@@ -7,8 +7,10 @@ size=16106127360 # total bytes of io
 qd=16 # workload queue depth
 read_portion=$1
 read_size=$(echo "$read_portion * $size" | bc)
+read_size=$( printf "%.0f" $read_size )
 write_portion=$(echo "1 - $read_portion" | bc)
 write_size=$(echo "$write_portion * $size" | bc)
+write_size=$( printf "%.0f" $write_size )
 echo '============================================='
 echo "write: ${write_portion}"
 echo '============================================='
