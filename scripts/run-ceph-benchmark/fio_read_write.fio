@@ -7,14 +7,6 @@ bs=4096
 time_based=1
 runtime=300
 direct = 1
-;write_iops_log
-
-[fio-write]
+rwmixread=10
 iodepth=16
-rw=randwrite
-size=write_size
-
-[fio-read]
-iodepth=16
-rw=randread
-size=read_size
+rw=randrw

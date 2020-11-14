@@ -6,14 +6,8 @@ bs=4096
 size=16106127360 # total bytes of io
 qd=16 # workload queue depth
 read_portion=$1
-read_size=$(echo "$read_portion * $size" | bc)
-read_size=$( printf "%.0f" $read_size )
-write_portion=$(echo "1 - $read_portion" | bc)
-write_size=$(echo "$write_portion * $size" | bc)
-write_size=$( printf "%.0f" $write_size )
 echo '============================================='
-echo "write: ${write_size}"
-echo "read: ${read_size}"
+echo "read portion: ${read_portion}%"
 echo '============================================='
 
 #------------- clear rocksdb debug files -------------#
@@ -31,8 +25,7 @@ sleep 5 # warmup
 sudo cp fio_read_write.fio fio_read_write_temp.fio
 sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_read_write_temp.fio
 sed -i "s/bs=.*/bs=${bs}/g" fio_read_write_temp.fio
-sed -i "s/size=write_size/size=${write_size}/g" fio_read_write_temp.fio
-sed -i "s/size=read_size/size=${read_size}/g" fio_read_write_temp.fio
+sed -i "s/rwmixread=.*/rwmixread=${read_portion}/g" fio_read_write_temp.fio
 
 sed -i "s/bs=.*/bs=${bs}/g" fio_prefill_rbdimage.fio
 sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_prefill_rbdimage.fio
