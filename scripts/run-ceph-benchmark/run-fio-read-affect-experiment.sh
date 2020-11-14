@@ -28,11 +28,11 @@ sudo bin/ceph daemon osd.0 config show | grep bluestore_rocksdb
 sleep 5 # warmup
 
 # change the fio parameters
-sudo cp fio_read_write.fio fio_read_write_backup.fio
-sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_read_write.fio
-sed -i "s/bs=.*/bs=${bs}/g" fio_read_write.fio
-sed -i "s/size=write_size/runtime=${write_size}/g" fio_read_write.fio
-sed -i "s/size=read_size/runtime=${read_size}/g" fio_read_write.fio
+sudo cp fio_read_write.fio fio_read_write_temp.fio
+sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_read_write_temp.fio
+sed -i "s/bs=.*/bs=${bs}/g" fio_read_write_temp.fio
+sed -i "s/size=write_size/size=${write_size}/g" fio_read_write_temp.fio
+sed -i "s/size=read_size/size=${read_size}/g" fio_read_write_temp.fio
 
 sed -i "s/bs=.*/bs=${bs}/g" fio_prefill_rbdimage.fio
 sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_prefill_rbdimage.fio
@@ -50,7 +50,7 @@ sudo bin/ceph daemon osd.0 reset kvq vector
 #------------- benchmark -------------#
     echo benchmark starts!
 echo $qd
-    sudo LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio fio_read_write.fio --output-format=json --output=dump-fio-bench-${qd}.json 
+    sudo LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio fio_read_write_temp.fio --output-format=json --output=dump-fio-bench-${qd}.json 
 
 # dump internal data with admin socket
 # BlueStore
@@ -67,8 +67,7 @@ sudo bin/rbd info mybench/image1 | tee dump_rbd_info.txt
 sudo bin/rbd rm mybench/image1
 sudo bin/ceph osd pool delete $pool $pool --yes-i-really-really-mean-it
 sudo ../src/stop.sh
-sudo rm fio_read_write.fio
-sudo mv fio_read_write_backup.fio fio_read_write.fio
+sudo rm fio_read_write_temp.fio
 # move everything to a directory
 # sudo mv dump* ${dn}
 # sudo cp ceph.conf ${dn}
