@@ -9,7 +9,7 @@ do
 	sudo ./run-fio-read-affect-experiment.sh $portion
 	path=$prefix$path_del$portion
 	sudo mkdir -p "$path"
-	name=$(find . -type f -name "codel_*"  | cut -c3-)
+	name=$(find . -type f -name "codel_log_batch*"  | cut -c3-)
 	sudo mv codel_* $path
 	sudo mv dump-fio-bench-* $path$path_del$name$post_fix
 done
