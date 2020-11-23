@@ -3,7 +3,7 @@ export CEPH_HOME=~/ceph
 export FIO_HOME=~/fio
 # run rbd bench and collect result
 bs=4096
-size=16106127360 # total bytes of io
+#size=16106127360 # total bytes of io
 qd=16 # workload queue depth
 read_portion=$1
 echo '============================================='
