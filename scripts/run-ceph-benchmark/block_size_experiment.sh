@@ -1,9 +1,9 @@
 #!/bin/bash
 output_path=$1
 codel_activated=0
-io_depth_settings=(48)
+io_depth_settings=(16 48 128 512)
 rw_settings=(randwrite)
-bs_settings=(1 4 16 64 128 512 1024 4096 10240)  # KB
+bs_settings=(1 4 16 64 128 512 1024 4096)  # KB
 declare -A target_lats=( [16]=0 [48]=0 [512]=0)
 declare -A intervals=( [16]=0 [48]=0 [512]=0)
 path_del="/"
