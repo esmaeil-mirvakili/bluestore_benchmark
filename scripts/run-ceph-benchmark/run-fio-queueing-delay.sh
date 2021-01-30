@@ -12,6 +12,7 @@ codel=$4
 target_lat=$5
 interval=$6
 batch_size=$7
+drive=$8
 echo '=================================================================='
 printf 'queue depth: %s\n' $1
 printf 'io type: %s\n' $2
@@ -55,7 +56,7 @@ printf '%s\n' "bs" "runtime" "qdepth" "bw_mbs" "lat_s" "osd_op_w_lat" "op_queue_
 #sudo rm /tmp/flush_job_timestamps.csv  /tmp/compact_job_timestamps.csv
 
 #------------- start cluster -------------#
-./start_ceph.sh "$codel" "$target_lat" "$interval" "$batch_size" # this is normal Ceph cluster on HDD/SSD
+./start_ceph.sh "$codel" "$target_lat" "$interval" "$batch_size" "$drive" # this is normal Ceph cluster on HDD/SSD
 #./start_ceph_ramdisk.sh # this is Ceph cluster on ramdisk
 sudo bin/ceph osd pool create mybench 128 128
 sudo bin/rbd create --size=40G mybench/image1
