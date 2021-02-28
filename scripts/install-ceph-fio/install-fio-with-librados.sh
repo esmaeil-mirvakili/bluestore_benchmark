@@ -7,7 +7,7 @@ sudo apt-get install python3-routes
 cd ~
 git clone https://github.com/esmaeil-mirvakili/ceph.git
 cd ceph	
-git checkout dev-CoDel
+git checkout bluestore-codel
 export CEPH_HOME="$(pwd)"
 ./install-deps.sh
 sudo apt update
