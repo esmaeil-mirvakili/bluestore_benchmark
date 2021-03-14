@@ -13,6 +13,7 @@ target_lat=$5
 interval=$6
 batch_size=$7
 drive=$8
+bssplit=$9
 echo '=================================================================='
 printf 'queue depth: %s\n' $1
 printf 'io type: %s\n' $2
@@ -63,19 +64,29 @@ sudo bin/rbd create --size=40G mybench/image1
 sudo bin/ceph daemon osd.0 config show | grep bluestore_rocksdb
 sleep 5 # warmup
 
-# change the fio parameters
-sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_write.fio
-sed -i "s/bs=.*/bs=${bs}/g" fio_write.fio
-sed -i "s/rw=.*/rw=${rw}/g" fio_write.fio
-sed -i "s/runtime=.*/runtime=${fioruntime}/g" fio_write.fio
+sudo rm -f fio_write_edited.fio
+sudo rm -f fio_prefill_rbdimage_edited.fio
+sudo cp fio_write.fio fio_write_edited.fio
+sudo cp fio_prefill_rbdimage.fio fio_prefill_rbdimage_edited.fio
 
-sed -i "s/bs=.*/bs=${bs}/g" fio_prefill_rbdimage.fio
-sed -i "s/rw=.*/rw=${rw}/g" fio_prefill_rbdimage.fio
-sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_prefill_rbdimage.fio
+# change the fio parameters
+sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_write_edited.fio
+if [ ! -z "$bssplit" ]; then
+    sed -i "s/bs=.*/bs=${bs}/g" fio_write_edited.fio
+    sed -i "s/bs=.*/bs=${bs}/g" fio_prefill_rbdimage_edited.fio
+else
+	sed -i "s/bs=.*/bssplit=${bssplit}/g" fio_write_edited.fio
+	sed -i "s/bs=.*/bssplit=${bssplit}/g" fio_prefill_rbdimage_edited.fio
+fi
+sed -i "s/rw=.*/rw=${rw}/g" fio_write_edited.fio
+sed -i "s/runtime=.*/runtime=${fioruntime}/g" fio_write_edited.fio
+
+sed -i "s/rw=.*/rw=${rw}/g" fio_prefill_rbdimage_edited.fio
+sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_prefill_rbdimage_edited.fio
 #------------- pre-fill -------------#    
 # pre-fill the image(to eliminate the op_rw)
 #echo pre-fill the image!
-sudo LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio fio_prefill_rbdimage.fio
+sudo LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio fio_prefill_rbdimage_edited.fio
 #------------- clear debug files and reset counters -------------#
 # reset the perf-counter
 sudo bin/ceph daemon osd.0 perf reset osd >/dev/null 2>/dev/null
@@ -86,7 +97,7 @@ sudo bin/ceph daemon osd.0 reset kvq vector
 #------------- benchmark -------------#
     echo benchmark starts!
 echo $qd
-    sudo LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio fio_write.fio --output-format=json --output=dump-fio-bench-${qd}.json 
+    sudo LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio fio_write_edited.fio --output-format=json --output=dump-fio-bench-${qd}.json 
 
 # dump internal data with admin socket
 # BlueStore
