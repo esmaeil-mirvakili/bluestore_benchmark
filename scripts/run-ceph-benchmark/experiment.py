@@ -1,16 +1,18 @@
 import os
 
-block_sizes = ['']
-block_splits = []
+block_sizes = ['4k']
+block_splits = ['4k/25:400k/75','4k/50:400k/50','4k/75:400k/25']
 io_depths = [256]
 exp_parameters = [
     [0, 1],
     [5 * 1000 * 1000],
-    [5 * 1024 * 1024],
+    [50 * 1000 * 1000],
     [200 * 1024],
     [200 * 1024],
-    [30],
-    [1]
+    [50],
+    [1],
+    [1],
+    ['6000:1430000\n70000:1970000\n500000:3300000']
 ]
 output_path = '~/results'
 
@@ -24,8 +26,7 @@ def main():
         new_settings = []
         for setting in settings:
             for param in params:
-                setting += str(param) + '\n'
-                new_settings.append(setting)
+                new_settings.append(setting + str(param) + '\n')
         settings = new_settings
 
     for block_split in block_splits:
