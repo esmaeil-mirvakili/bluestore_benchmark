@@ -72,11 +72,11 @@ sudo cp fio_prefill_rbdimage.fio fio_prefill_rbdimage_edited.fio
 # change the fio parameters
 sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_write_edited.fio
 if [ ! -z "$bssplit" ]; then
+    sed -i "s~bs=.*~bssplit=${bssplit}~g" fio_write_edited.fio
+    sed -i "s~bs=.*~bssplit=${bssplit}~g" fio_prefill_rbdimage_edited.fio
+else
     sed -i "s/bs=.*/bs=${bs}/g" fio_write_edited.fio
     sed -i "s/bs=.*/bs=${bs}/g" fio_prefill_rbdimage_edited.fio
-else
-	sed -i "s/bs=.*/bssplit=${bssplit}/g" fio_write_edited.fio
-	sed -i "s/bs=.*/bssplit=${bssplit}/g" fio_prefill_rbdimage_edited.fio
 fi
 sed -i "s/rw=.*/rw=${rw}/g" fio_write_edited.fio
 sed -i "s/runtime=.*/runtime=${fioruntime}/g" fio_write_edited.fio

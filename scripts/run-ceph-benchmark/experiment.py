@@ -34,7 +34,7 @@ def main():
                 for i,setting in enumerate(settings):
                     with open('codel.settings', 'w') as file:
                         file.write(setting)
-                    os.system(f'sudo ./run-fio-queueing-delay.sh {io_depth} randwrite {block_size} $codel_activated $target_lat $interval $init_batch_size /dev/sdc {block_split}')
+                    os.system(f'sudo ./run-fio-queueing-delay.sh {io_depth} randwrite {block_size} 0 0 0 1 /dev/sdc {block_split}')
                     os.system(f'sudo mkdir -p {output_path}/{i}')
                     os.system(f'sudo mv codel_* {output_path}/{i}')
                     os.system(f'sudo mv dump-fio-bench-* {output_path}/{i}')
