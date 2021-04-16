@@ -57,7 +57,8 @@ def main(experiment_setup_yaml):
                     size2bytes(setup['min_throttle']),
                     setup['throttle_threshold'],
                     '1',
-                    '1' if setup['only_4k'] else '0'
+                    '1' if setup['only_4k'] else '0',
+                    '1' if setup['adaptive_target'] else '0'
                 ]
                 file.writelines([str(line)+'\n' for line in lines])
             split = size_split(setup['sizes'], setup['size_mix'])

@@ -15,6 +15,7 @@ experiments:
     throttle_threshold: 0
     starting_throttle: '200k'
     min_throttle: '200k'
+    adaptive_target: OFF
   -
     name: 'vanilla/25_4k_75_64k'
     sizes:
@@ -31,6 +32,7 @@ experiments:
     throttle_threshold: 0
     starting_throttle: '200k'
     min_throttle: '200k'
+    adaptive_target: OFF
   -
     name: 'vanilla/50_4k_50_64k'
     sizes:
@@ -47,6 +49,7 @@ experiments:
     throttle_threshold: 0
     starting_throttle: '200k'
     min_throttle: '200k'
+    adaptive_target: OFF
   -
     name: 'vanilla/75_4k_25_64k'
     sizes:
@@ -63,6 +66,7 @@ experiments:
     throttle_threshold: 0
     starting_throttle: '200k'
     min_throttle: '200k'
+    adaptive_target: OFF
   -
     name: 'vanilla/100_4k_0_64k'
     sizes:
@@ -79,3 +83,4 @@ experiments:
     throttle_threshold: 0
     starting_throttle: '200k'
     min_throttle: '200k'
+    adaptive_target: OFF
