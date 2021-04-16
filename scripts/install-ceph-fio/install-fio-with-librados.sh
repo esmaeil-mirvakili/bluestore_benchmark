@@ -2,6 +2,7 @@
 
 sudo apt update
 sudo apt-get install python3-routes
+sudo pip install pyyaml
 
 # install ceph
 cd ~

@@ -1,0 +1,81 @@
+experiments:
+  -
+    name: 'vanilla/0_4k_100_64k'
+    sizes:
+      - '4k'
+      - '64k'
+    size_mix:
+      - 0
+      - 100
+    io_depth: 256
+    codel: OFF
+    only_4k: OFF
+    target: '4.5ms'
+    window: '5m'
+    throttle_threshold: 0
+    starting_throttle: '200k'
+    min_throttle: '200k'
+  -
+    name: 'vanilla/25_4k_75_64k'
+    sizes:
+      - '4k'
+      - '64k'
+    size_mix:
+      - 25
+      - 75
+    io_depth: 256
+    codel: OFF
+    only_4k: OFF
+    target: '4.5 ms'
+    window: '5m'
+    throttle_threshold: 0
+    starting_throttle: '200k'
+    min_throttle: '200k'
+  -
+    name: 'vanilla/50_4k_50_64k'
+    sizes:
+      - '4k'
+      - '64k'
+    size_mix:
+      - 50
+      - 50
+    io_depth: 256
+    codel: OFF
+    only_4k: OFF
+    target: '4.5 ms'
+    window: '5m'
+    throttle_threshold: 0
+    starting_throttle: '200k'
+    min_throttle: '200k'
+  -
+    name: 'vanilla/75_4k_25_64k'
+    sizes:
+      - '4k'
+      - '64k'
+    size_mix:
+      - 75
+      - 25
+    io_depth: 256
+    codel: OFF
+    only_4k: OFF
+    target: '4.5 ms'
+    window: '5m'
+    throttle_threshold: 0
+    starting_throttle: '200k'
+    min_throttle: '200k'
+  -
+    name: 'vanilla/100_4k_0_64k'
+    sizes:
+      - '4k'
+      - '64k'
+    size_mix:
+      - 100
+      - 0
+    io_depth: 256
+    codel: OFF
+    only_4k: OFF
+    target: '4.5 ms'
+    window: '5m'
+    throttle_threshold: 0
+    starting_throttle: '200k'
+    min_throttle: '200k'

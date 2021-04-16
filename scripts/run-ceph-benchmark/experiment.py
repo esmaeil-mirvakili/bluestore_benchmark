@@ -1,45 +1,79 @@
 import os
+import sys
+import yaml
+import math
 
-block_sizes = ['4k']
-block_splits = ['4k/25:400k/75','4k/50:400k/50','4k/75:400k/25']
-io_depths = [256]
-exp_parameters = [
-    [0, 1],
-    [5 * 1000 * 1000],
-    [50 * 1000 * 1000],
-    [200 * 1024],
-    [200 * 1024],
-    [50],
-    [1],
-    [1],
-    ['6000:1430000\n70000:1970000\n500000:3300000']
-]
 output_path = '~/results'
 
 
-def main():
-    os.system('sudo rm -f codel_*')
+def size_split(sizes, size_mix):
+    split = ''
+    for size, mix in zip(sizes, size_mix):
+        split += f'{size}/{mix}:'
+    return split[:-1]
+
+
+def size2bytes(size):
+    if size[-1].isalpha():
+        if size[-1] == 'k':
+            return int(size[:-1]) * 1024
+        if size[-1] == 'm':
+            return int(size[:-1]) * 1024 * 1024
+        if size[-1] == 'g':
+            return int(size[:-1]) * 1024 * 1024 * 1024
+        return int(size[:-1])
+    else:
+        return int(size)
+
+
+def time2ns(time):
+    if time[-1].isalpha():
+        if time[-2:] == 'ns':
+            return math.floor(float(time[:-2]))
+        if time[-2:] == 'us':
+            return math.floor(float(time[:-2]) * 1000)
+        if time[-2:] == 'ms':
+            return math.floor(float(time[:-2]) * 1000 * 1000)
+        return math.floor(float(time[:-1]) * 1000 * 1000 * 1000)
+    else:
+        return int(time)
+
+
+def main(experiment_setup_yaml):
+    if experiment_setup_yaml is None:
+        experiment_setup_yaml = 'experiment_setups.yaml'
+    os.system('sudo rm -f *.csv')
     os.system('sudo rm -f dump-fio-bench-*')
     os.system('sudo rm -rf randwrite-*')
-    settings = [""]
-    for params in exp_parameters:
-        new_settings = []
-        for setting in settings:
-            for param in params:
-                new_settings.append(setting + str(param) + '\n')
-        settings = new_settings
-
-    for block_split in block_splits:
-        for block_size in block_sizes:
-            for io_depth in io_depths:
-                for i,setting in enumerate(settings):
-                    with open('codel.settings', 'w') as file:
-                        file.write(setting)
-                    os.system(f'sudo ./run-fio-queueing-delay.sh {io_depth} randwrite {block_size} 0 0 0 1 /dev/sdc {block_split}')
-                    os.system(f'sudo mkdir -p {output_path}/{block_split}/{i}')
-                    os.system(f'sudo mv codel_* {output_path}/{block_split}/{i}')
-                    os.system(f'sudo mv dump-fio-bench-* {output_path}/{block_split}/{i}')
+    with open(experiment_setup_yaml) as yaml_file:
+        setups = yaml.load(yaml_file, Loader=yaml.FullLoader)
+        for setup in setups['experiments']:
+            with open('codel.settings', 'w') as file:
+                lines = [
+                    '1' if setup['codel'] else '0',
+                    time2ns(setup['target']),
+                    size2bytes(setup['window']),
+                    size2bytes(setup['starting_throttle']),
+                    size2bytes(setup['min_throttle']),
+                    setup['throttle_threshold'],
+                    '1',
+                    '1' if setup['only_4k'] else '0'
+                ]
+                file.writelines([str(line)+'\n' for line in lines])
+            split = size_split(setup['sizes'], setup['size_mix'])
+            os.system(
+                f'sudo ./run-fio-queueing-delay.sh {setup["io_depth"]} randwrite 4k 0 0 0 1 /dev/sdc {split}')
+            path = os.path.join(output_path, setup["name"])
+            os.system(f'sudo mkdir -p {path}')
+            os.system(f'sudo mv *.csv {path}')
+            os.system(f'sudo mv dump-fio-bench-* {path}')
+            with open(os.path.join(path, 'codel_settings.yaml'), 'w') as codel_settings:
+                yaml.dump(setup, codel_settings)
 
 
 if __name__ == "__main__":
-    main()
+    experiments_setups = None
+    if len(sys.argv) > 1:
+        print(sys.argv)
+        experiments_setups = sys.argv[1]
+    main(experiments_setups)
