@@ -62,8 +62,15 @@ def main(experiment_setup_yaml):
                 ]
                 file.writelines([str(line)+'\n' for line in lines])
             split = size_split(setup['sizes'], setup['size_mix'])
+            block_size = '4k'
+            if 100 in setup['size_mix']:
+                split = ''
+                for size, mix in zip(setup['sizes'], setup['size_mix']):
+                    if mix == 100:
+                        block_size = size
+                        break
             os.system(
-                f'sudo ./run-fio-queueing-delay.sh {setup["io_depth"]} randwrite 4k 0 0 0 1 /dev/sdc {split}')
+                f'sudo ./run-fio-queueing-delay.sh {setup["io_depth"]} randwrite {block_size} 0 0 0 1 /dev/sdc {split}')
             path = os.path.join(output_path, setup["name"])
             os.system(f'sudo mkdir -p {path}')
             os.system(f'sudo mv *.csv {path}')
