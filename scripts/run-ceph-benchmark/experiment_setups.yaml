@@ -11,7 +11,7 @@ experiments:
     codel: OFF
     only_4k: OFF
     target: '4.5ms'
-    window: '5m'
+    window: '50ms'
     throttle_threshold: 0
     starting_throttle: '200k'
     min_throttle: '200k'
@@ -27,8 +27,8 @@ experiments:
     io_depth: 256
     codel: OFF
     only_4k: OFF
-    target: '4.5 ms'
-    window: '5m'
+    target: '4.5ms'
+    window: '50ms'
     throttle_threshold: 0
     starting_throttle: '200k'
     min_throttle: '200k'
@@ -44,8 +44,8 @@ experiments:
     io_depth: 256
     codel: OFF
     only_4k: OFF
-    target: '4.5 ms'
-    window: '5m'
+    target: '4.5ms'
+    window: '50ms'
     throttle_threshold: 0
     starting_throttle: '200k'
     min_throttle: '200k'
@@ -61,8 +61,8 @@ experiments:
     io_depth: 256
     codel: OFF
     only_4k: OFF
-    target: '4.5 ms'
-    window: '5m'
+    target: '4.5ms'
+    window: '50ms'
     throttle_threshold: 0
     starting_throttle: '200k'
     min_throttle: '200k'
@@ -78,8 +78,8 @@ experiments:
     io_depth: 256
     codel: OFF
     only_4k: OFF
-    target: '4.5 ms'
-    window: '5m'
+    target: '4.5ms'
+    window: '50ms'
     throttle_threshold: 0
     starting_throttle: '200k'
     min_throttle: '200k'

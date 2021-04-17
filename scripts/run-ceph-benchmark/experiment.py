@@ -3,7 +3,7 @@ import sys
 import yaml
 import math
 
-output_path = '~/results'
+output_path = '/users/esmaeil/results'
 
 
 def size_split(sizes, size_mix):
@@ -52,7 +52,7 @@ def main(experiment_setup_yaml):
                 lines = [
                     '1' if setup['codel'] else '0',
                     time2ns(setup['target']),
-                    size2bytes(setup['window']),
+                    time2ns(setup['window']),
                     size2bytes(setup['starting_throttle']),
                     size2bytes(setup['min_throttle']),
                     setup['throttle_threshold'],
