@@ -58,7 +58,13 @@ def main(experiment_setup_yaml):
                     setup['throttle_threshold'],
                     '1',
                     '1' if setup['only_4k'] else '0',
-                    '1' if setup['adaptive_target'] else '0'
+                    '1' if setup['adaptive_target'] else '0',
+                    setup['slow_codel_freq'],
+                    setup['target_inc'],
+                    '1' if setup['smart_inc'] else '0',
+                    setup['agg_threshold'],
+                    setup['norm_threshold'],
+
                 ]
                 file.writelines([str(line)+'\n' for line in lines])
             split = size_split(setup['sizes'], setup['size_mix'])
