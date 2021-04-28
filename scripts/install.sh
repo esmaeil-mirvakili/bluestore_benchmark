@@ -1,6 +1,6 @@
 #!/bin/bash
 
-branch="bluestore-window-based-codel"
+branch="bluestore-codel"
 git_url="https://github.com/esmaeil-mirvakili/ceph.git"
 
 cd install-ceph-fio
