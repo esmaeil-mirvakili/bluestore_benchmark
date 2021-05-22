@@ -1,23 +1,25 @@
 experiments:
   -
-    name: 'adaptive/25_4k_75_64k_20ms'
+    name: 'sf_codel/4k_64_5ms'
     sizes:
       - '4k'
       - '64k'
     size_mix:
-      - 25
-      - 75
-    io_depth: 256
+      - 100
+      - 0
+    io_depth: 64
     codel: ON
     only_4k: OFF
-    target: '20ms'
+    target: '5ms'
     window: '50ms'
     throttle_threshold: 0
     starting_throttle: '200k'
-    min_throttle: '200k'
+    min_throttle: '10k'
     adaptive_target: ON
-    slow_codel_freq: 20
-    target_inc: 100000
+    slow_codel_freq: 10
+    target_inc: 0.01
     smart_inc: OFF
-    agg_threshold: 40
-    norm_threshold: 10
+    agg_threshold: 200000
+    norm_threshold: 1000
+    run_time: 300
+    prefill_time: 1800

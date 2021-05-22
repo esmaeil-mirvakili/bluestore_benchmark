@@ -35,4 +35,4 @@ LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio "$FIO_HO
 
 # install useful packages
 sudo apt install cscope
-sudo pip install -U pyyaml
+sudo pip3 install -U pyyaml

@@ -4,16 +4,16 @@ export FIO_HOME=~/fio
 # run rbd bench and collect result
 bs=$3   #"131072"  # block size 
 rw=$2  # io type
-fioruntime=300  # seconds
-prefill_time=$(( 2*fioruntime ))
+fioruntime=$6  # seconds
+prefill_time=$7
 iototal="400m" # total bytes of io
 qd=$1 # workload queue depth
-codel=$4
-target_lat=$5
-interval=$6
-batch_size=$7
-drive=$8
-bssplit=$9
+codel=0
+target_lat=0
+interval=0
+batch_size=1
+drive=$4
+bssplit=$5
 echo '=================================================================='
 printf 'queue depth: %s\n' $1
 printf 'io type: %s\n' $2
@@ -83,6 +83,7 @@ sed -i "s/runtime=.*/runtime=${fioruntime}/g" fio_write_edited.fio
 
 sed -i "s/rw=.*/rw=${rw}/g" fio_prefill_rbdimage_edited.fio
 sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_prefill_rbdimage_edited.fio
+sed -i "s/runtime=.*/runtime=${prefill_time}/g" fio_prefill_rbdimage_edited.fio
 #------------- pre-fill -------------#    
 # pre-fill the image(to eliminate the op_rw)
 #echo pre-fill the image!
