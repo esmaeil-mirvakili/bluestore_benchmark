@@ -4,8 +4,8 @@ export FIO_HOME=~/fio
 # run rbd bench and collect result
 bs=$3   #"131072"  # block size 
 rw=$2  # io type
-fioruntime=$6  # seconds
-prefill_time=$7
+fioruntime=$5  # seconds
+prefill_time=$6
 iototal="400m" # total bytes of io
 qd=$1 # workload queue depth
 codel=0
@@ -13,7 +13,7 @@ target_lat=0
 interval=0
 batch_size=1
 drive=$4
-bssplit=$5
+bssplit=$7
 echo '=================================================================='
 printf 'queue depth: %s\n' $1
 printf 'io type: %s\n' $2

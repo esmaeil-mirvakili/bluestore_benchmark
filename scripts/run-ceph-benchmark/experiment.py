@@ -75,8 +75,9 @@ def main(experiment_setup_yaml):
                     if mix == 100:
                         block_size = size
                         break
-            os.system(
-                f'sudo ./run-fio-queueing-delay.sh {setup["io_depth"]} randwrite {block_size} /dev/sdc {split} {setup["run_time"]} {setup["prefill_time"]}')
+            cmd = f'sudo ./run-fio-queueing-delay.sh {setup["io_depth"]} randwrite {block_size} /dev/sdc {setup["run_time"]} {setup["prefill_time"]} {split}'
+            print(cmd)
+            os.system(cmd)
             path = os.path.join(output_path, setup["name"])
             os.system(f'sudo mkdir -p {path}')
             os.system(f'sudo mv *.csv {path}')

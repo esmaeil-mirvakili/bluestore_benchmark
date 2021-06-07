@@ -18,7 +18,7 @@ experiments:
     adaptive_target: ON
     slow_codel_freq: 10
     target_inc: 0.01
-    smart_inc: OFF
+    smart_inc: ON
     agg_threshold: 200000
     norm_threshold: 1000
     run_time: 300
