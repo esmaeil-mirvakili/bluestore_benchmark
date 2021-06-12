@@ -1,25 +1,29 @@
 experiments:
   -
-    name: 'sf_codel/4k_64_5ms'
+    name: 'sf_codel/4k_1024_1ms'
     sizes:
       - '4k'
       - '64k'
     size_mix:
       - 100
       - 0
-    io_depth: 64
+    io_depth: 1024
     codel: ON
     only_4k: OFF
-    target: '5ms'
+    target: '1ms'
     window: '50ms'
-    throttle_threshold: 0
+    beta: 45
     starting_throttle: '200k'
     min_throttle: '10k'
     adaptive_target: ON
     slow_codel_freq: 10
-    target_inc: 0.01
+    step_size: 500000
     smart_inc: ON
-    agg_threshold: 200000
-    norm_threshold: 1000
+    agg_threshold: 200000000
+    norm_threshold: 1000000
     run_time: 300
     prefill_time: 1800
+    window_size: 5
+    lat_normalization_factor: 100
+    bw_noise_threshold: 5
+    lat_noise_threshold: 0.1
