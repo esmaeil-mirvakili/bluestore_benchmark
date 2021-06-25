@@ -12,7 +12,7 @@ experiments:
     only_4k: OFF
     target: '1ms'
     window: '50ms'
-    beta: 45
+    beta: 10
     starting_throttle: '200k'
     min_throttle: '10k'
     adaptive_target: ON
@@ -23,8 +23,8 @@ experiments:
     norm_threshold: 1000000
     run_time: 300
     prefill_time: 1800
-    window_size: 5
-    lat_normalization_factor: 100
+    window_size: 10
+    lat_normalization_factor: -0.1
     bw_noise_threshold: 5
-    lat_noise_threshold: 0.1
+    lat_noise_threshold: 0.01
     optimize_using_target: OFF
