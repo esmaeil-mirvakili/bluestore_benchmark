@@ -68,7 +68,7 @@ def main(experiment_setup_yaml):
                     setup['lat_normalization_factor'],
                     setup['lat_noise_threshold'],
                     setup['bw_noise_threshold'],
-
+                    '1' if setup['optimize_using_target'] else '0',
                 ]
                 file.writelines([str(line)+'\n' for line in lines])
             split = size_split(setup['sizes'], setup['size_mix'])
