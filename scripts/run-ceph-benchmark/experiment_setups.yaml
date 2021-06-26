@@ -28,3 +28,4 @@ experiments:
     bw_noise_threshold: 5
     lat_noise_threshold: 0.01
     optimize_using_target: OFF
+    throughput_outlier_detection: OFF
