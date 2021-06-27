@@ -24,8 +24,9 @@ experiments:
     run_time: 300
     prefill_time: 1800
     window_size: 10
-    lat_normalization_factor: -0.1
+    lat_normalization_factor: -0.2
     bw_noise_threshold: 5
     lat_noise_threshold: 0.01
     optimize_using_target: OFF
     throughput_outlier_detection: OFF
+    delta_threshold: 0.1

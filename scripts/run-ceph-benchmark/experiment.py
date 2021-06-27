@@ -70,6 +70,7 @@ def main(experiment_setup_yaml):
                     setup['lat_noise_threshold'],
                     '1' if setup['optimize_using_target'] else '0',
                     '1' if setup['throughput_outlier_detection'] else '0',
+                    setup['delta_threshold'],
                 ]
                 file.writelines([str(line)+'\n' for line in lines])
             split = size_split(setup['sizes'], setup['size_mix'])
