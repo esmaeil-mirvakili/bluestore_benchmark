@@ -21,12 +21,12 @@ experiments:
     smart_inc: ON
     agg_threshold: 200000000
     norm_threshold: 1000000
-    run_time: 300
+    run_time: 1800
     prefill_time: 1800
-    window_size: 10
-    lat_normalization_factor: -0.2
-    bw_noise_threshold: 5
-    lat_noise_threshold: 0.01
-    optimize_using_target: OFF
+    window_size: 20
+    lat_normalization_factor: 0
+    bw_noise_threshold: 0
+    lat_noise_threshold: 0.05
+    optimize_using_target: ON
     throughput_outlier_detection: OFF
-    delta_threshold: 0.1
+    delta_threshold: 0.2
