@@ -9,7 +9,6 @@ experiments:
       - 0
     io_depth: 1024
     codel: ON
-    only_4k: OFF
     target: '1ms'
     window: '50ms'
     beta: 10
@@ -23,10 +22,7 @@ experiments:
     norm_threshold: 1000000
     run_time: 1800
     prefill_time: 1800
-    window_size: 20
-    lat_normalization_factor: 0
-    bw_noise_threshold: 0
-    lat_noise_threshold: 0.05
-    optimize_using_target: ON
-    throughput_outlier_detection: OFF
     delta_threshold: 0.2
+    time_window_duration: '1ms'
+    time_window_size: 50
+    smoothing_activated: OFF
