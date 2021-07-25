@@ -59,13 +59,12 @@ def main(experiment_setup_yaml):
                     '1' if setup['smart_inc'] else '0',
                     '1' if setup['adaptive_target'] else '0',
                     setup['slow_codel_freq'],
-                    setup['step_size'],
-                    setup['agg_threshold'],
-                    setup['norm_threshold'],
-                    setup['delta_threshold'],
-                    time2ns(setup['time_window_duration']),
-                    setup['time_window_size'],
-                    '1' if setup['smoothing_activated'] else '0',
+                    time2ns(setup['max_target_latency']),
+                    time2ns(setup['min_target_latency']),
+                    '1' if setup['outlier_detection'] else '0',
+                    time2ns(setup['range']),
+                    time2ns(setup['config_latency_threshold']),
+                    setup['size_threshold'],
                 ]
                 file.writelines([str(line)+'\n' for line in lines])
             split = size_split(setup['sizes'], setup['size_mix'])

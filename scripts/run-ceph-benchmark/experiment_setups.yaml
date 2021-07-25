@@ -14,15 +14,14 @@ experiments:
     beta: 10
     starting_throttle: '200k'
     min_throttle: '10k'
+    smart_inc: ON
     adaptive_target: ON
     slow_codel_freq: 10
-    step_size: 500000
-    smart_inc: ON
-    agg_threshold: 200000000
-    norm_threshold: 1000000
-    run_time: 1800
+    max_target_latency: '30ms'
+    min_target_latency: '1ms'
+    run_time: 300
     prefill_time: 1800
-    delta_threshold: 0.2
-    time_window_duration: '1ms'
-    time_window_size: 50
-    smoothing_activated: OFF
+    outlier_detection: OFF
+    range: '1ms'
+    config_latency_threshold: '10ms'
+    size_threshold: 20
