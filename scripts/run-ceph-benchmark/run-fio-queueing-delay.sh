@@ -93,6 +93,7 @@ sudo LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio fio
 sudo bin/ceph daemon osd.0 perf reset osd >/dev/null 2>/dev/null
 sudo echo 3 | sudo tee /proc/sys/vm/drop_caches && sudo sync
 # reset admin socket of OSD and BlueStore
+sudo bin/ceph daemon osd.0 enable codel
 sudo bin/ceph daemon osd.0 reset kvq vector
 
 #------------- benchmark -------------#
