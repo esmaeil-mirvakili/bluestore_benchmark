@@ -104,9 +104,9 @@ def main(experiment_setup_yaml):
                     else:
                         line = re.sub(r'bs=.*', f'bs={block_size}', line)
                     line = re.sub(r'rw=.*', f'rw=randwrite', line)
-                    line = re.sub(r'runtime=.*', f'runtime={setup["run_time"]}', line)
+                    line = re.sub(r'runtime=.*', f'runtime={setup["prefill_time"]}', line)
                     line = re.sub(r'iodepth=.*', f'iodepth={setup["io_depth"]}', line)
-                    fio_write.write(line)
+                    fio_prefill.write(line)
             cmd = f'sudo ./run-fio-queueing-delay.sh {setup["io_depth"]} randwrite {block_size} /dev/sdc {setup["run_time"]} {setup["prefill_time"]} {split}'
             print(cmd)
             os.system(cmd)
