@@ -64,26 +64,26 @@ sudo bin/rbd create --size=40G mybench/image1
 sudo bin/ceph daemon osd.0 config show | grep bluestore_rocksdb
 sleep 5 # warmup
 
-sudo rm -f fio_write_edited.fio
-sudo rm -f fio_prefill_rbdimage_edited.fio
-sudo cp fio_write.fio fio_write_edited.fio
-sudo cp fio_prefill_rbdimage.fio fio_prefill_rbdimage_edited.fio
-
-# change the fio parameters
-sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_write_edited.fio
-if [ ! -z "$bssplit" ]; then
-    sed -i "s~bs=.*~bssplit=${bssplit}~g" fio_write_edited.fio
-    sed -i "s~bs=.*~bssplit=${bssplit}~g" fio_prefill_rbdimage_edited.fio
-else
-    sed -i "s/bs=.*/bs=${bs}/g" fio_write_edited.fio
-    sed -i "s/bs=.*/bs=${bs}/g" fio_prefill_rbdimage_edited.fio
-fi
-sed -i "s/rw=.*/rw=${rw}/g" fio_write_edited.fio
-sed -i "s/runtime=.*/runtime=${fioruntime}/g" fio_write_edited.fio
-
-sed -i "s/rw=.*/rw=${rw}/g" fio_prefill_rbdimage_edited.fio
-sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_prefill_rbdimage_edited.fio
-sed -i "s/runtime=.*/runtime=${prefill_time}/g" fio_prefill_rbdimage_edited.fio
+#sudo rm -f fio_write_edited.fio
+#sudo rm -f fio_prefill_rbdimage_edited.fio
+#sudo cp fio_write.fio fio_write_edited.fio
+#sudo cp fio_prefill_rbdimage.fio fio_prefill_rbdimage_edited.fio
+#
+## change the fio parameters
+#sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_write_edited.fio
+#if [ ! -z "$bssplit" ]; then
+#    sed -i "s~bs=.*~bssplit=${bssplit}~g" fio_write_edited.fio
+#    sed -i "s~bs=.*~bssplit=${bssplit}~g" fio_prefill_rbdimage_edited.fio
+#else
+#    sed -i "s/bs=.*/bs=${bs}/g" fio_write_edited.fio
+#    sed -i "s/bs=.*/bs=${bs}/g" fio_prefill_rbdimage_edited.fio
+#fi
+#sed -i "s/rw=.*/rw=${rw}/g" fio_write_edited.fio
+#sed -i "s/runtime=.*/runtime=${fioruntime}/g" fio_write_edited.fio
+#
+#sed -i "s/rw=.*/rw=${rw}/g" fio_prefill_rbdimage_edited.fio
+#sed -i "s/iodepth=.*/iodepth=${qd}/g" fio_prefill_rbdimage_edited.fio
+#sed -i "s/runtime=.*/runtime=${prefill_time}/g" fio_prefill_rbdimage_edited.fio
 #------------- pre-fill -------------#    
 # pre-fill the image(to eliminate the op_rw)
 #echo pre-fill the image!
