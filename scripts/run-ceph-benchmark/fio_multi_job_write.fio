@@ -4,18 +4,14 @@ clientname=admin
 pool=mybench
 rbdname=image1
 rw=randwrite
-
-[fio-write1]
 bs=4096
 time_based=1
 runtime=300
 direct = 1
+
+[fio-write1]
 iodepth={1}
 
 [fio-write2]
-bs=4096
-time_based=1
-runtime=300
 startdelay=300
-direct = 1
 iodepth={2}

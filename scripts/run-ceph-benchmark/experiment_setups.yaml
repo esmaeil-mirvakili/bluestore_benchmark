@@ -25,3 +25,4 @@ experiments:
     range: '1ms'
     config_latency_threshold: '10ms'
     size_threshold: 20
+    rnd_std_dev: 1

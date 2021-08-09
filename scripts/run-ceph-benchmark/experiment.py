@@ -66,6 +66,7 @@ def main(experiment_setup_yaml):
                     time2ns(setup['range']),
                     time2ns(setup['config_latency_threshold']),
                     setup['size_threshold'],
+                    setup['rnd_std_dev']
                 ]
                 file.writelines([str(line)+'\n' for line in lines])
             split = size_split(setup['sizes'], setup['size_mix'])
@@ -77,7 +78,10 @@ def main(experiment_setup_yaml):
                         block_size = size
                         break
             lines = []
+            io_max = setup['io_depth']
             if 'io_depth2' in setup:
+                if setup['io_depth2'] > io_max:
+                    io_max = setup['io_depth2']
                 with open('fio_multi_job_write.fio') as fio_write:
                     lines = fio_write.readlines()
             else:
@@ -93,7 +97,8 @@ def main(experiment_setup_yaml):
                     line = re.sub(r'runtime=.*', f'runtime={setup["run_time"]}', line)
                     line = re.sub(r'startdelay=.*', f'startdelay={setup["run_time"]}', line)
                     line = re.sub(r'iodepth= *\{1\}', f'iodepth={setup["io_depth"]}', line)
-                    line = re.sub(r'iodepth= *\{2\}', f'iodepth={setup["io_depth2"]}', line)
+                    if 'io_depth2' in setup:
+                        line = re.sub(r'iodepth= *\{2\}', f'iodepth={setup["io_depth2"]}', line)
                     fio_write.write(line)
             with open('fio_prefill_rbdimage.fio') as fio_prefill:
                 lines = fio_prefill.readlines()
@@ -105,7 +110,7 @@ def main(experiment_setup_yaml):
                         line = re.sub(r'bs=.*', f'bs={block_size}', line)
                     line = re.sub(r'rw=.*', f'rw=randwrite', line)
                     line = re.sub(r'runtime=.*', f'runtime={setup["prefill_time"]}', line)
-                    line = re.sub(r'iodepth=.*', f'iodepth={setup["io_depth"]}', line)
+                    line = re.sub(r'iodepth=.*', f'iodepth={io_max}', line)
                     fio_prefill.write(line)
             cmd = f'sudo ./run-fio-queueing-delay.sh {setup["io_depth"]} randwrite {block_size} /dev/sdc {setup["run_time"]} {setup["prefill_time"]} {split}'
             print(cmd)
