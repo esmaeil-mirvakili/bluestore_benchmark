@@ -69,19 +69,23 @@ def main(experiment_setup_yaml):
                     setup['rnd_std_dev']
                 ]
                 file.writelines([str(line)+'\n' for line in lines])
-            split = size_split(setup['sizes'], setup['size_mix'])
-            block_size = '4k'
-            if 100 in setup['size_mix']:
+            block_size2 = None
+            if setup['one_job']:
+                split = size_split(setup['sizes'], setup['size_mix'])
+                block_size = '4k'
+                if 100 in setup['size_mix']:
+                    split = ''
+                    for size, mix in zip(setup['sizes'], setup['size_mix']):
+                        if mix == 100:
+                            block_size = size
+                            break
+            else:
+                block_size = setup['sizes'][0]
+                block_size2 = setup['sizes'][1]
                 split = ''
-                for size, mix in zip(setup['sizes'], setup['size_mix']):
-                    if mix == 100:
-                        block_size = size
-                        break
             lines = []
             io_max = setup['io_depth']
-            if 'io_depth2' in setup:
-                if setup['io_depth2'] > io_max:
-                    io_max = setup['io_depth2']
+            if block_size2 is not None:
                 with open('fio_multi_job_write.fio') as fio_write:
                     lines = fio_write.readlines()
             else:
@@ -92,24 +96,35 @@ def main(experiment_setup_yaml):
                     if len(split) > 0:
                         line = re.sub(r'bs=.*', f'bssplit={split}', line)
                     else:
-                        line = re.sub(r'bs=.*', f'bs={block_size}', line)
+                        if block_size2 is None:
+                            line = re.sub(r'bs=.*', f'bs={block_size}', line)
+                        else:
+                            line = re.sub(r'bs= *\{1\}', f'bs={block_size}', line)
+                            line = re.sub(r'bs= *\{2\}', f'bs={block_size2}', line)
                     line = re.sub(r'rw=.*', f'rw=randwrite', line)
                     line = re.sub(r'runtime=.*', f'runtime={setup["run_time"]}', line)
                     line = re.sub(r'startdelay=.*', f'startdelay={setup["run_time"]}', line)
-                    line = re.sub(r'iodepth= *\{1\}', f'iodepth={setup["io_depth"]}', line)
-                    if 'io_depth2' in setup:
-                        line = re.sub(r'iodepth= *\{2\}', f'iodepth={setup["io_depth2"]}', line)
+                    line = re.sub(r'iodepth=.*', f'iodepth={setup["io_depth"]}', line)
                     fio_write.write(line)
-            with open('fio_prefill_rbdimage.fio') as fio_prefill:
-                lines = fio_prefill.readlines()
+            if block_size2 is None:
+                with open('fio_prefill_rbdimage.fio') as fio_prefill:
+                    lines = fio_prefill.readlines()
+            else:
+                with open('fio_multi_job_prefill_rbdimage.fio') as fio_prefill:
+                    lines = fio_prefill.readlines()
             with open('fio_prefill_rbdimage_edited.fio', 'w') as fio_prefill:
                 for line in lines:
                     if len(split) > 0:
                         line = re.sub(r'bs=.*', f'bssplit={split}', line)
                     else:
-                        line = re.sub(r'bs=.*', f'bs={block_size}', line)
+                        if block_size2 is None:
+                            line = re.sub(r'bs=.*', f'bs={block_size}', line)
+                        else:
+                            line = re.sub(r'bs= *\{1\}', f'bs={block_size}', line)
+                            line = re.sub(r'bs= *\{2\}', f'bs={block_size2}', line)
                     line = re.sub(r'rw=.*', f'rw=randwrite', line)
                     line = re.sub(r'runtime=.*', f'runtime={setup["prefill_time"]}', line)
+                    line = re.sub(r'startdelay=.*', f'startdelay={setup["prefill_time"]}', line)
                     line = re.sub(r'iodepth=.*', f'iodepth={io_max}', line)
                     fio_prefill.write(line)
             cmd = f'sudo ./run-fio-queueing-delay.sh {setup["io_depth"]} randwrite {block_size} /dev/sdc {setup["run_time"]} {setup["prefill_time"]} {split}'
