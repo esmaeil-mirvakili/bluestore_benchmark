@@ -3,6 +3,7 @@ import sys
 import yaml
 import math
 import re
+import subprocess
 
 output_path = '/users/esmaeil/results'
 
@@ -48,7 +49,9 @@ def main(experiment_setup_yaml):
     os.system('sudo rm -rf randwrite-*')
     with open(experiment_setup_yaml) as yaml_file:
         setups = yaml.load(yaml_file, Loader=yaml.FullLoader)
-        for setup in setups['experiments']:
+        i = 0
+        while i < len(setups['experiments']):
+            setup = setups['experiments'][i]
             with open('codel.settings', 'w') as file:
                 lines = [
                     '1' if setup['codel'] else '0',
@@ -129,7 +132,15 @@ def main(experiment_setup_yaml):
                     fio_prefill.write(line)
             cmd = f'sudo ./run-fio-queueing-delay.sh {setup["io_depth"]} randwrite {block_size} /dev/sdc {setup["run_time"]} {setup["prefill_time"]} {split}'
             print(cmd)
-            os.system(cmd)
+            # os.system(cmd)
+            p = subprocess.Popen([cmd])
+            try:
+                p.wait(2 * int(setup["run_time"]) + int(setup["prefill_time"]))
+            except subprocess.TimeoutExpired:
+                p.kill()
+                os.system('sudo pkill -f ceph')
+                continue
+            i += 1
             path = os.path.join(output_path, setup["name"])
             os.system(f'sudo mkdir -p {path}')
             os.system(f'sudo mv *.csv {path}')
