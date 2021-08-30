@@ -133,7 +133,7 @@ def main(experiment_setup_yaml):
             cmd = f'sudo ./run-fio-queueing-delay.sh {setup["io_depth"]} randwrite {block_size} /dev/sdc {setup["run_time"]} {setup["prefill_time"]} {split}'
             print(cmd)
             # os.system(cmd)
-            p = subprocess.Popen([cmd])
+            p = subprocess.Popen([cmd], shell=True)
             try:
                 p.wait(2 * int(setup["run_time"]) + int(setup["prefill_time"]))
             except subprocess.TimeoutExpired:
