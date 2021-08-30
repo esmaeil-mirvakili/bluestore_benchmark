@@ -40,7 +40,7 @@ def main():
                         }
                         setups.append(setup)
     with open('experiment_setups.yaml', 'w') as yaml_file:
-        yaml.dump(setups, yaml_file)
+        yaml.dump({'experiments': setups}, yaml_file)
     os.system('sudo python3 experiment.py')
 
 
