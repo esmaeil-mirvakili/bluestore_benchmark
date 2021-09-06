@@ -104,11 +104,13 @@ def main(experiment_setup_yaml):
                         else:
                             line = re.sub(r'bs= *\{1\}', f'bs={block_size}', line)
                             line = re.sub(r'bs= *\{2\}', f'bs={block_size2}', line)
-                    line = re.sub(r'rw=.*', f'rw=randwrite', line)
+                    line = re.sub(r'rw=.*', f'rw={setup["op_type"]}', line)
                     line = re.sub(r'runtime=.*', f'runtime={setup["run_time"]}', line)
                     line = re.sub(r'startdelay=.*', f'startdelay={setup["run_time"]}', line)
                     line = re.sub(r'iodepth=.*', f'iodepth={setup["io_depth"]}', line)
                     fio_write.write(line)
+                if 'mix_read' in setup:
+                    fio_write.write(f'rwmixread={setup["mix_read"]}')
             if block_size2 is None:
                 with open('fio_prefill_rbdimage.fio') as fio_prefill:
                     lines = fio_prefill.readlines()
@@ -125,11 +127,13 @@ def main(experiment_setup_yaml):
                         else:
                             line = re.sub(r'bs= *\{1\}', f'bs={block_size}', line)
                             line = re.sub(r'bs= *\{2\}', f'bs={block_size2}', line)
-                    line = re.sub(r'rw=.*', f'rw=randwrite', line)
+                    line = re.sub(r'rw=.*', f'rw={setup["op_type"]}', line)
                     line = re.sub(r'runtime=.*', f'runtime={setup["prefill_time"]}', line)
                     line = re.sub(r'startdelay=.*', f'startdelay={setup["prefill_time"]}', line)
                     line = re.sub(r'iodepth=.*', f'iodepth={io_max}', line)
                     fio_prefill.write(line)
+                if 'mix_read' in setup:
+                    fio_prefill.write(f'rwmixread={setup["mix_read"]}')
             cmd = f'sudo ./run-fio-queueing-delay.sh {setup["io_depth"]} randwrite {block_size} /dev/sdc {setup["run_time"]} {setup["prefill_time"]} {split}'
             print(cmd)
             # os.system(cmd)

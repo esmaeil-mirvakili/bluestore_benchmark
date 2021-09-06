@@ -27,3 +27,5 @@ experiments:
     config_latency_threshold: '10ms'
     size_threshold: 20
     rnd_std_dev: 1
+    op_type: 'randwrite'
+#    mix_read: 0
