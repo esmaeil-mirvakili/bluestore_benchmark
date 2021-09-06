@@ -11,9 +11,12 @@ def main():
                     for percentages in [[100, 0], [50, 50], [0, 100]]:
                         for beta in [0.01, 0.1, 0.5, 1, 2, 5, 7, 10, 15, 20, 100]:
                             for start_point in ['5ms']:
-                                name = ''
+                                name = f'{op_type}_'
+                                if read_mix > 0:
+                                    name += f'{read_mix}_read_'
                                 for i, size in enumerate(sizes):
                                     name += f'{percentages[i]}_{sizes[i]}_'
+                                name += 'write_'
                                 name += f'beta_{beta}_{index}'
                                 setup = {
                                     'name': name,
