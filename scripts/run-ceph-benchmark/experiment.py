@@ -110,7 +110,7 @@ def main(experiment_setup_yaml):
                     line = re.sub(r'iodepth=.*', f'iodepth={setup["io_depth"]}', line)
                     fio_write.write(line)
                 if 'mix_read' in setup:
-                    fio_write.write(f'rwmixread={setup["mix_read"]}')
+                    fio_write.write(f'\nrwmixread={setup["mix_read"]}')
             if block_size2 is None:
                 with open('fio_prefill_rbdimage.fio') as fio_prefill:
                     lines = fio_prefill.readlines()
@@ -133,7 +133,7 @@ def main(experiment_setup_yaml):
                     line = re.sub(r'iodepth=.*', f'iodepth={io_max}', line)
                     fio_prefill.write(line)
                 if 'mix_read' in setup:
-                    fio_prefill.write(f'rwmixread={setup["mix_read"]}')
+                    fio_prefill.write(f'\nrwmixread={setup["mix_read"]}')
             cmd = f'sudo ./run-fio-queueing-delay.sh {setup["io_depth"]} randwrite {block_size} /dev/sdc {setup["run_time"]} {setup["prefill_time"]} {split}'
             print(cmd)
             # os.system(cmd)
