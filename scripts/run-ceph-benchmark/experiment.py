@@ -54,7 +54,7 @@ def main(experiment_setup_yaml):
             setup = setups['experiments'][i]
             with open('codel.settings', 'w') as file:
                 lines = [
-                    '1' if setup['codel'] else '0',
+                    '0',
                     time2ns(setup['target']),
                     time2ns(setup['window']),
                     size2bytes(setup['starting_throttle']),
@@ -134,7 +134,9 @@ def main(experiment_setup_yaml):
                     fio_prefill.write(line)
                 # if 'mix_read' in setup:
                 #     fio_prefill.write(f'\nrwmixread={setup["mix_read"]}')
-            cmd = f'sudo ./run-fio-queueing-delay.sh {setup["io_depth"]} randwrite {block_size} /dev/sdc {setup["run_time"]} {setup["prefill_time"]} {split}'
+            active = '1' if setup['codel'] else '0'
+            ssd_thread_num = setup['ssd_thread_num']
+            cmd = f'sudo ./run-fio-queueing-delay.sh {active} {ssd_thread_num}'
             print(cmd)
             # os.system(cmd)
             p = subprocess.Popen([cmd], shell=True)

@@ -8,6 +8,7 @@ experiments:
       - 100
       - 0
     one_job: ON
+    ssd_thread_num: 2
     io_depth: 1024
     codel: ON
     target: '1ms'
