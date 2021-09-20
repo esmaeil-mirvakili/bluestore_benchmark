@@ -42,7 +42,8 @@ def main():
                                     'config_latency_threshold': '10ms',
                                     'size_threshold': 100,
                                     'rnd_std_dev': 5,
-                                    'op_type': op_type
+                                    'op_type': op_type,
+                                    'ssd_thread_num': 2
                                 }
                                 if read_mix > 0:
                                     setup['mix_read'] = read_mix

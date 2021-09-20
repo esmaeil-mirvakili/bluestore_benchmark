@@ -52,8 +52,8 @@ sudo echo 3 | sudo tee /proc/sys/vm/drop_caches && sudo sync
 if [ "$codel" = 1 ] ; then
   sudo bin/ceph daemon osd.0 enable codel
 fi
-sudo bin/ceph daemon osd.0 reset read vector
 sudo bin/ceph daemon osd.0 reset kvq vector
+sudo bin/ceph daemon osd.0 reset op vector
 
 #------------- benchmark -------------#
 echo benchmark starts!
@@ -62,7 +62,7 @@ sudo LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio fio
 # dump internal data with admin socket
 # BlueStore
 sudo bin/ceph daemon osd.0 dump kvq vector
-sudo bin/ceph daemon osd.0 dump read vector
+sudo bin/ceph daemon osd.0 dump op vector
 # OSD
 # aggregation
 # rbd info
