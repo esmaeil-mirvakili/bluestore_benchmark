@@ -4,12 +4,12 @@ import os
 
 def main():
     setups = []
-    for index in range(5):
-        for op_type in ['randwrite']:
-            for read_mix in [0]:
+    for codel in [False, True]:
+        for op_type in ['randrw']:
+            for read_mix in [50]:
                 for sizes in [['4k', '64k']]:
-                    for percentages in [[100, 0], [50, 50], [0, 100]]:
-                        for beta in [0.01, 0.1, 0.5, 1, 2, 5, 7, 10, 15, 20, 100]:
+                    for percentages in [[0, 100]]:
+                        for beta in [5]:
                             for start_point in ['5ms']:
                                 name = f'{op_type}_'
                                 if read_mix > 0:
@@ -17,14 +17,14 @@ def main():
                                 for i, size in enumerate(sizes):
                                     name += f'{percentages[i]}_{sizes[i]}_'
                                 name += 'write_'
-                                name += f'beta_{beta}_{index}'
+                                name += f'beta_{beta}_{"sf_codel" if codel else "vanilla"}'
                                 setup = {
                                     'name': name,
                                     'sizes': sizes,
                                     'size_mix': percentages,
                                     'one_job': True,
                                     'io_depth': 1024,
-                                    'codel': False,
+                                    'codel': codel,
                                     'target': start_point,
                                     'window': '50ms',
                                     'beta': beta,

@@ -1,5 +1,6 @@
 #!/bin/bash
 export CEPH_HOME=~/ceph
+export CEPH_CONF=~/ceph/build/ceph.conf
 export FIO_HOME=~/fio
 # run rbd bench and collect result
 codel=$1
@@ -13,7 +14,7 @@ printf 'block size: %s\n' $3
 pool="mybench"
 
 #------------- start cluster -------------#
-./start_ceph.sh "$ssd_thread_num" # this is normal Ceph cluster on HDD/SSD
+./start_ceph.sh # this is normal Ceph cluster on HDD/SSD
 #./start_ceph_ramdisk.sh # this is Ceph cluster on ramdisk
 sudo bin/ceph osd pool create mybench 128 128
 sudo bin/rbd create --size=40G mybench/image1

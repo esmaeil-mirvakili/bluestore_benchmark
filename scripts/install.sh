@@ -1,6 +1,6 @@
 #!/bin/bash
 
-branch="bluestore-codel"
+branch="bluestore-bufferbloat-mitigation"
 git_url="https://github.com/esmaeil-mirvakili/ceph.git"
 
 cd install-ceph-fio

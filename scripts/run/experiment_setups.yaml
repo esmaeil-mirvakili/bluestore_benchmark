@@ -22,7 +22,7 @@ experiments:
     max_target_latency: '30ms'
     min_target_latency: '1ms'
     run_time: 300
-    prefill_time: 600
+    prefill_time: 1800
     outlier_detection: OFF
     range: '1ms'
     config_latency_threshold: '10ms'

@@ -150,7 +150,7 @@ def main(experiment_setup_yaml):
             path = os.path.join(output_path, setup["name"])
             os.system(f'sudo mkdir -p {path}')
             os.system(f'sudo mv *.csv {path}')
-            os.system(f'sudo mv dump-fio-bench-* {path}')
+            os.system(f'sudo mv dump-fio-bench* {path}')
             with open(os.path.join(path, 'codel_settings.yaml'), 'w') as codel_settings:
                 yaml.dump(setup, codel_settings)
 
