@@ -22,7 +22,7 @@ cmake --build build
 
 # install package "python3-routes" to get rid of the "No module named routes" error
 #sudo apt-get install python3-routes
-
+cd build
 ../src/stop.sh && rm -rf out dev && MON=1 OSD=1 MGR=1 MDS=0 RGW=0 ../src/vstart.sh -n -x
 ./bin/ceph osd pool create rados
 
