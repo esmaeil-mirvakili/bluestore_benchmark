@@ -20,7 +20,7 @@ export CEPH_HOME="$(pwd)"
 sudo apt update
 ./do_cmake.sh -DWITH_MANPAGE=OFF -DWITH_BABELTRACE=OFF -DWITH_MGR_DASHBOARD_FRONTEND=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo
 cd build
-make -j`nproc`
+cmake --build build
 
 # install package "python3-routes" to get rid of the "No module named routes" error
 #sudo apt-get install python3-routes
