@@ -4,6 +4,12 @@ sudo apt update
 sudo apt-get install python3-routes
 sudo apt-get -y install python3-pip
 
+wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
+sudo apt-get update -y
+sudo apt install cmake -y
+sudo apt-get install -y ninja-build
+
 # install ceph
 cd ~
 git clone https://github.com/esmaeil-mirvakili/ceph.git
