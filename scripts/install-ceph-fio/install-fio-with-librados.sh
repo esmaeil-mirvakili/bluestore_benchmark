@@ -17,7 +17,6 @@ cd ceph
 git checkout bluestore-codel
 export CEPH_HOME="$(pwd)"
 ./install-deps.sh
-sudo apt update
 ./do_cmake.sh -DWITH_MANPAGE=OFF -DWITH_BABELTRACE=OFF -DWITH_MGR_DASHBOARD_FRONTEND=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo
 cmake --build build
 
