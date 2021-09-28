@@ -19,7 +19,6 @@ export CEPH_HOME="$(pwd)"
 ./install-deps.sh
 sudo apt update
 ./do_cmake.sh -DWITH_MANPAGE=OFF -DWITH_BABELTRACE=OFF -DWITH_MGR_DASHBOARD_FRONTEND=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo
-cd build
 cmake --build build
 
 # install package "python3-routes" to get rid of the "No module named routes" error
