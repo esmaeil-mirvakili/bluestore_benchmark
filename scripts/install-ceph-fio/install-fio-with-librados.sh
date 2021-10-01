@@ -4,10 +4,14 @@ sudo apt update
 sudo apt-get -y install python3-routes
 sudo apt-get -y install python3-pip
 
-wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
-sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
-sudo apt-get update -y
-sudo apt install cmake -y
+sudo apt-get install -y build-essential libssl-dev
+cd /tmp
+wget https://github.com/Kitware/CMake/releases/download/v3.20.0/cmake-3.20.0.tar.gz
+tar -zxvf cmake-3.20.0.tar.gz
+cd cmake-3.20.0
+./bootstrap
+make
+sudo make install
 sudo apt-get install -y ninja-build
 
 # install ceph
