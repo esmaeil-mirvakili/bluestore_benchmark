@@ -1,8 +1,14 @@
 #!/bin/bash
 
-sudo apt update
+sudo apt update -y
 sudo apt-get -y install python3-routes
 sudo apt-get -y install python3-pip
+
+sudo echo "Acquire::https::Verify-Peer "false";" >> /etc/apt/apt.conf.d/20packagekit
+sudo echo "Acquire::https::Verify-Host "false";" >> /etc/apt/apt.conf.d/20packagekit
+
+sudo echo "Acquire::https::Verify-Peer "false";" >> /etc/apt/apt.conf.d/20auto-upgrades
+sudo echo "Acquire::https::Verify-Host "false";" >> /etc/apt/apt.conf.d/20auto-upgrades
 
 sudo apt-get install -y build-essential libssl-dev
 cd /tmp
@@ -12,6 +18,7 @@ cd cmake-3.20.0
 ./bootstrap
 make
 sudo make install
+sudo apt-get update -y
 sudo apt-get install -y ninja-build
 
 # install ceph
