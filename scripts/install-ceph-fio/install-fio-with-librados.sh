@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo apt update
-sudo apt-get install python3-routes
+sudo apt-get -y install python3-routes
 sudo apt-get -y install python3-pip
 
 wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
@@ -38,5 +38,5 @@ cd "$CEPH_HOME"/build
 LD_LIBRARY_PATH="$CEPH_HOME"/build/lib:$LD_LIBRARY_PATH "$FIO_HOME"/fio "$FIO_HOME"/examples/rados.fio
 
 # install useful packages
-sudo apt install cscope
+sudo apt install -y cscope
 sudo pip3 install -U pyyaml

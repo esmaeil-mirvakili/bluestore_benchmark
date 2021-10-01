@@ -1,32 +1,20 @@
 experiments:
   -
-    name: 'sf_codel/4k_1024_1ms'
-    sizes:
-      - '4k'
-      - '64k'
-    size_mix:
-      - 100
-      - 0
-    one_job: ON
-    ssd_thread_num: 2
-    io_depth: 1024
-    codel: ON
-    target: '1ms'
-    window: '50ms'
-    beta: 10
-    starting_throttle: '200k'
-    min_throttle: '10k'
-    smart_inc: ON
-    adaptive_target: ON
-    slow_codel_freq: 10
-    max_target_latency: '30ms'
-    min_target_latency: '1ms'
-    run_time: 300
-    prefill_time: 1800
-    outlier_detection: OFF
-    range: '1ms'
-    config_latency_threshold: '10ms'
-    size_threshold: 20
-    rnd_std_dev: 1
-    op_type: 'randwrite'
-#    mix_read: 0
+    name: 'sf_codel_4k_1024'
+    output: 'results'
+    conf: ceph.conf
+    workloads:
+      -
+        name: 'prefilling'
+        desc: 'prefill the rbd image'
+        type: fio
+        conf:
+          fio-file: fio_prefill_rbdimage.fio
+        keep-output: OFF
+      -
+        name: 'experiment'
+        desc: 'experiment workload'
+        type: fio
+        conf:
+          fio-file: fio_write.fio
+        keep-output: ON
