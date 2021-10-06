@@ -7,6 +7,8 @@ import subprocess
 
 output_path = '/users/esmaeil/results'
 
+def export_config(name, value):
+    os.system(f'export {name}="{value}"')
 
 def size_split(sizes, size_mix):
     split = ''
@@ -52,100 +54,23 @@ def main(experiment_setup_yaml):
         i = 0
         while i < len(setups['experiments']):
             setup = setups['experiments'][i]
-            with open('codel.settings', 'w') as file:
-                lines = [
-                    '0',
-                    time2ns(setup['target']),
-                    time2ns(setup['window']),
-                    size2bytes(setup['starting_throttle']),
-                    size2bytes(setup['min_throttle']),
-                    setup['beta'],
-                    '1' if setup['smart_inc'] else '0',
-                    '1' if setup['adaptive_target'] else '0',
-                    setup['slow_codel_freq'],
-                    time2ns(setup['max_target_latency']),
-                    time2ns(setup['min_target_latency']),
-                    '1' if setup['outlier_detection'] else '0',
-                    time2ns(setup['range']),
-                    time2ns(setup['config_latency_threshold']),
-                    setup['size_threshold'],
-                    setup['rnd_std_dev']
-                ]
-                file.writelines([str(line)+'\n' for line in lines])
-            block_size2 = None
-            if setup['one_job']:
-                split = size_split(setup['sizes'], setup['size_mix'])
-                block_size = '4k'
-                if 100 in setup['size_mix']:
-                    split = ''
-                    for size, mix in zip(setup['sizes'], setup['size_mix']):
-                        if mix == 100:
-                            block_size = size
-                            break
-            else:
-                block_size = setup['sizes'][0]
-                block_size2 = setup['sizes'][1]
-                split = ''
-            lines = []
-            io_max = setup['io_depth']
-            if block_size2 is not None:
-                with open('fio_multi_job_write.fio') as fio_write:
-                    lines = fio_write.readlines()
-            else:
-                with open('fio_write.fio') as fio_write:
-                    lines = fio_write.readlines()
-            with open('fio_write_edited.fio', 'w') as fio_write:
-                for line in lines:
-                    if len(split) > 0:
-                        line = re.sub(r'bs=.*', f'bssplit={split}', line)
-                    else:
-                        if block_size2 is None:
-                            line = re.sub(r'bs=.*', f'bs={block_size}', line)
-                        else:
-                            line = re.sub(r'bs= *\{1\}', f'bs={block_size}', line)
-                            line = re.sub(r'bs= *\{2\}', f'bs={block_size2}', line)
-                    line = re.sub(r'rw=.*', f'rw={setup["op_type"]}', line)
-                    line = re.sub(r'runtime=.*', f'runtime={setup["run_time"]}', line)
-                    line = re.sub(r'startdelay=.*', f'startdelay={setup["run_time"]}', line)
-                    line = re.sub(r'iodepth=.*', f'iodepth={setup["io_depth"]}', line)
-                    fio_write.write(line)
-                if 'mix_read' in setup:
-                    fio_write.write(f'\nrwmixread={setup["mix_read"]}')
-            if block_size2 is None:
-                with open('fio_prefill_rbdimage.fio') as fio_prefill:
-                    lines = fio_prefill.readlines()
-            else:
-                with open('fio_multi_job_prefill_rbdimage.fio') as fio_prefill:
-                    lines = fio_prefill.readlines()
-            with open('fio_prefill_rbdimage_edited.fio', 'w') as fio_prefill:
-                for line in lines:
-                    if len(split) > 0:
-                        line = re.sub(r'bs=.*', f'bssplit={split}', line)
-                    else:
-                        if block_size2 is None:
-                            line = re.sub(r'bs=.*', f'bs={block_size}', line)
-                        else:
-                            line = re.sub(r'bs= *\{1\}', f'bs={block_size}', line)
-                            line = re.sub(r'bs= *\{2\}', f'bs={block_size2}', line)
-                    line = re.sub(r'rw=.*', f'rw=randwrite', line)
-                    line = re.sub(r'runtime=.*', f'runtime={setup["prefill_time"]}', line)
-                    line = re.sub(r'startdelay=.*', f'startdelay={setup["prefill_time"]}', line)
-                    line = re.sub(r'iodepth=.*', f'iodepth={io_max}', line)
-                    fio_prefill.write(line)
-                # if 'mix_read' in setup:
-                #     fio_prefill.write(f'\nrwmixread={setup["mix_read"]}')
-            active = '1' if setup['codel'] else '0'
-            ssd_thread_num = setup['ssd_thread_num']
-            cmd = f'sudo ./run-fio-queueing-delay.sh {active} {ssd_thread_num}'
-            print(cmd)
-            # os.system(cmd)
-            p = subprocess.Popen([cmd], shell=True)
-            try:
-                p.wait(2 * int(setup["run_time"]) + int(setup["prefill_time"]))
-            except subprocess.TimeoutExpired:
-                p.kill()
-                os.system('sudo pkill -f ceph')
-                continue
+
+            export_config('CODEL', 1 if setup['codel'] else 0)
+            export_config('TARGET', time2ns(setup['target']))
+            export_config('FAST_INTERVAL', time2ns(setup['fast_interval']))
+            export_config('SLOW_INTERVAL', time2ns(setup['slow_interval']))
+            export_config('SLOP_TARGET', setup['slop_target'])
+            export_config('STARTING_BUDGET', setup['starting_budget'])
+            export_config('MIN_BUDGET', setup['min_budget'])
+            export_config('MAX_TARGET_LATENCY', setup['max_target_latency'])
+            export_config('MIN_TARGET_LATENCY', setup['min_target_latency'])
+            export_config('REGRESSION_HISTORY_SIZE', setup['regression_history_size'])
+
+            export_config('FIO_CONFIG', setup['fio_config'])
+            export_config('FIO_PREFILL_CONFIG', setup['fio_prefill_config'])
+
+            cmd = f'sudo ./run-fio-queueing-delay.sh'
+            os.system(cmd)
             i += 1
             path = os.path.join(output_path, setup["name"])
             os.system(f'sudo mkdir -p {path}')

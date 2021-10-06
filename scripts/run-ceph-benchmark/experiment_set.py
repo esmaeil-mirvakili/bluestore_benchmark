@@ -4,50 +4,50 @@ import os
 
 def main():
     setups = []
+    vanilla_done = []
+    codel_done = []
+    sfcodel_done = []
     for codel in [False, True]:
-        for op_type in ['randrw']:
-            for read_mix in [50]:
-                for sizes in [['4k', '64k']]:
-                    for percentages in [[0, 100]]:
-                        for beta in [5]:
-                            for start_point in ['5ms']:
-                                name = f'{op_type}_'
-                                if read_mix > 0:
-                                    name += f'{read_mix}_read_'
-                                for i, size in enumerate(sizes):
-                                    name += f'{percentages[i]}_{sizes[i]}_'
-                                name += 'write_'
-                                name += f'beta_{beta}_{"sf_codel" if codel else "vanilla"}'
-                                setup = {
-                                    'name': name,
-                                    'sizes': sizes,
-                                    'size_mix': percentages,
-                                    'one_job': True,
-                                    'io_depth': 1024,
-                                    'codel': codel,
-                                    'target': start_point,
-                                    'window': '50ms',
-                                    'beta': beta,
-                                    'starting_throttle': '200k',
-                                    'min_throttle': '10k',
-                                    'smart_inc': True,
-                                    'adaptive_target': True,
-                                    'slow_codel_freq': 10,
-                                    'max_target_latency': '1000ms',
-                                    'min_target_latency': '1ms',
-                                    'run_time': 300,
-                                    'prefill_time': 600,
-                                    'outlier_detection': False,
-                                    'range': '1ms',
-                                    'config_latency_threshold': '10ms',
-                                    'size_threshold': 100,
-                                    'rnd_std_dev': 5,
-                                    'op_type': op_type,
-                                    'ssd_thread_num': 2
-                                }
-                                if read_mix > 0:
-                                    setup['mix_read'] = read_mix
-                                setups.append(setup)
+        for fio_config in [('', ''), ]:
+            for slow_interval in ['500ms', '0ms']:
+                for target_slope in [0.1, 0.5, 1, 5, 10, 20]:
+                    for target in ['5ms', '10ms']:
+                        fio_name = fio_config[0].replace('fio', '').replace('.', '').strip()
+                        if codel:
+                            if slow_interval == '0ms':
+                                name = f'codel_target_{target}'
+                                codel_name = f'{target}_{fio_config[0]}'
+                                if codel_name in codel_done:
+                                    continue
+                                codel_done.append(codel_name)
+                            else:
+                                sfcodel_name = f'{target_slope}_{fio_config[0]}'
+                                if sfcodel_name in sfcodel_done:
+                                    continue
+                                codel_done.append(sfcodel_name)
+                                name = f'sfcodel_target_slope_{target_slope}'
+                        else:
+                            if fio_config[0] in vanilla_done:
+                                continue
+                            vanilla_done.append(fio_config[0])
+                            name = 'vanilla'
+                        name += f'_{fio_name}'
+                        setup = {
+                            'name': name,
+                            'fio_config': fio_config[0],
+                            'fio_prefill_config': fio_config[1],
+                            'codel': codel,
+                            'target': target,
+                            'fast_interval': '50ms',
+                            'slow_interval': '500ms',
+                            'slop_target': target_slope,
+                            'starting_budget': '200k',
+                            'min_budget': '10k',
+                            'max_target_latency': '30ms',
+                            'min_target_latency': '1ms',
+                            'regression_history_size': 100,
+                        }
+                        setups.append(setup)
     with open('experiment_setups.yaml', 'w') as yaml_file:
         yaml.dump({'experiments': setups}, yaml_file)
     os.system('sudo python3 experiment.py')

@@ -1,32 +1,15 @@
 experiments:
   -
     name: 'sf_codel/4k_1024_1ms'
-    sizes:
-      - '4k'
-      - '64k'
-    size_mix:
-      - 100
-      - 0
-    one_job: ON
-    ssd_thread_num: 2
-    io_depth: 1024
+    fio_config: 'fio_write.fio'
+    fio_prefill_config: 'fio_prefill_rbdimage_edited.fio'
     codel: ON
     target: '1ms'
-    window: '50ms'
-    beta: 10
-    starting_throttle: '200k'
-    min_throttle: '10k'
-    smart_inc: ON
-    adaptive_target: ON
-    slow_codel_freq: 10
+    fast_interval: '50ms'
+    slow_interval: '500ms'
+    slop_target: 10
+    starting_budget: '200k'
+    min_budget: '10k'
     max_target_latency: '30ms'
     min_target_latency: '1ms'
-    run_time: 300
-    prefill_time: 600
-    outlier_detection: OFF
-    range: '1ms'
-    config_latency_threshold: '10ms'
-    size_threshold: 20
-    rnd_std_dev: 1
-    op_type: 'randwrite'
-#    mix_read: 0
+    regression_history_size: 100
