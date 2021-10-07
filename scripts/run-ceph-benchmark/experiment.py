@@ -10,7 +10,7 @@ output_path = '/users/esmaeil/results'
 
 def export_config(name, value):
     # os.system(f'export {name}="{value}"')
-    os.environ[name] = value
+    os.environ[name] = str(value)
 
 
 def size_split(sizes, size_mix):

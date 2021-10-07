@@ -39,7 +39,7 @@ def main():
                             'codel': codel,
                             'target': target,
                             'fast_interval': '50ms',
-                            'slow_interval': '500ms',
+                            'slow_interval': slow_interval,
                             'slop_target': target_slope,
                             'starting_budget': '200k',
                             'min_budget': '10k',
