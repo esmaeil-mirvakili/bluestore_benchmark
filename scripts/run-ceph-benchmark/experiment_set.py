@@ -8,11 +8,11 @@ def main():
     codel_done = []
     sfcodel_done = []
     for codel in [False, True]:
-        for fio_config in [('', ''), ]:
+        for fio_config in [('fio_write_4K_16.fio', 'prefill/fio_prefill_rbdimage_4K_2048.fio'), ('fio_write_4K_64.fio', 'prefill/fio_prefill_rbdimage_4K_2048.fio'), ('fio_write_4K_128.fio', 'prefill/fio_prefill_rbdimage_4K_2048.fio'), ('fio_write_4K_256.fio', 'prefill/fio_prefill_rbdimage_4K_2048.fio'), ('fio_write_4K_512.fio', 'prefill/fio_prefill_rbdimage_4K_2048.fio'), ('fio_write_4K_1024.fio', 'prefill/fio_prefill_rbdimage_4K_2048.fio')]:
             for slow_interval in ['500ms', '0ms']:
                 for target_slope in [0.1, 0.5, 1, 5, 10, 20]:
                     for target in ['5ms', '10ms']:
-                        fio_name = fio_config[0].replace('fio', '').replace('.', '').strip()
+                        fio_name = fio_config[0].replace('fio_', '').replace('.fio', '').strip()
                         if codel:
                             if slow_interval == '0ms':
                                 name = f'codel_target_{target}'
