@@ -34,8 +34,8 @@ def main():
                         name += f'_{fio_name}'
                         setup = {
                             'name': name,
-                            'fio_config': fio_config[0],
-                            'fio_prefill_config': fio_config[1],
+                            'fio_config': 'fio_configs/' + fio_config[0],
+                            'fio_prefill_config': 'fio_configs/' + fio_config[1],
                             'codel': codel,
                             'target': target,
                             'fast_interval': '50ms',
